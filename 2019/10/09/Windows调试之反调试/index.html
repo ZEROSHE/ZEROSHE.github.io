@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.proxy.ustclug.org/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+
+<style>
+    .pace .pace-progress {
+        background: #428BCA; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #428BCA, 0 0 5px #ff009e; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #428BCA;    /*上边框颜色*/
+        border-left-color: #428BCA;    /*左边框颜色*/
+    }
+</style>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.4.0',
+    exturl: true,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Windows 调试中常见的反调试技巧技巧">
+<meta name="keywords" content="AntiDebug">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows调试之反调试">
+<meta property="og:url" content="http://yoursite.com/2019/10/09/Windows调试之反调试/index.html">
+<meta property="og:site_name" content="Assassin">
+<meta property="og:description" content="Windows 调试中常见的反调试技巧技巧">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAMAAABOo35HAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC9UExURVlZWdPT07KysmRkZIWFhfT09JmZmWZmZm9vb39/fxkZGUxMTDMzM3p6epCQkKamppubm729venp6cjIyN7e3tbW1s/Pz8LCwnx8fLS0tFZWVoiIiI+Pj6GhoeTk5Glpabu7u93d3evr66CgoJSUlKqqqsnJyeDg4Hd3d8PDw+Xl5bi4uNHR0dvb26Ojo6urq+fn51hYWDg4OCgoKHBwcK2traenp0FBQe7u7vHx8U5OTre3t8zMzHV1df///7GrnpQAAAA/dFJOU///////////////////////////////////////////////////////////////////////////////////AI4mfBcAAAUGSURBVHja7NoJb6M4GMZxY0NCD64kve/pMZ2d3Z297+X7f6zFNmBAMUXa6URl/q9UJSWPUPzrizFWRUlNLgEBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYYIEFAVhggQUWWGBBABZYYIEFFlgQgAUWWGCBBRYEYIEFFlhggQUBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYn6cCIcRXgvX/h9qcIVBqDdbEM8RCxGCB9QqXYRwHYDHBgwXWl8eKZKiESHI3Ba1kWs3fKixcaJUl1YyeBm7Ocq+yLItUiVBGnXxenSHJolIKEcwHq6ikbOX1YGVzQCTN8LPmSLreghUl9sN4Uw7yajMrLC0TZ1ImzqY6FEop0+pIaEN5HaoOxVuwEqFyc4I46uSlzOLqgxlh6UaR9l3VYWl9Fdoxb1Q90KJtu41pwwFW/WHhTtW8i7TafLCqRsk6bsGw63L9qurXRmuIlbT9lDQnlXU+nBFW1Q2qnZbDprWa2tjR90LZFqx1/+Td/HpGWLlrLDvIwTcx6dQ1Vrntbig68cDms3JwbA5Y1azs1ger6sNV/bbIw1jU81MvNAGrl58RVn8ozW+btF08iGFoAlYvP3csfVur1gJBEIA1uBmue5dhZDOyO2epbmgCVi8/I6x0MMHH9pjsTfBhNzQBq5uPZoQlB0uH3DZG4EZqQ26fL3sZq5uf09Ih6qw3i/pm6BZO0qZX7rrUS68Xsbr5ZE4rePMk08pk9aUZugfqppvs6AM1Acvlo/StP+6EbW06z8hJqxbYp2BZPQUnFsLsKuhQdaHqn5ewbF7KXIn0jWO5MqOQ7RaNLPtbNMmmhimj0GUmYLl8Gs0Lq4wyPbTu1l2QKqHSouzs3OlDIslW5SQsnY/NXmFplyNvEuuLV/Tau9BzwiraDUSwXmysztYWWNtL1psXeumgIrDGaqXvBfUuvtqUYI3V2t1wk1e2msFluJJm6zDJXv/fIfjPP7DAAgsssCiwwAILLLDAosACCyywwAKLAgsssMACC6zt9fDz/v75tyOB+98PD2+ORgKffjw4OP1uJPDxl+Xy8v1I4MPF3t7VNyOB4/vF4uzdzrG+39f1kz/w66Guv/yBvw90KX/gZKkr8Qf+2dOV+gNHC12/7RxrabD2/a31bLAO/a11YbAO/K21MFhLf2s9Gqw9f2vdGqzFu11jnVusE2/gxmI9eQOnFuvYG7i0WH7uK4t15w2cWazrXWP9a7H8f/bQYvm/6IPF+sF/pVssf19Ii/WH/0K2WH/uGuvEWC39gSdj9Twy+Rqri5EZx1gt/IE7Y/XoD1wbq9vd3w1PlufnD2OBp+ebm/uxwPHF6emnscDR4vLy41jg7vHq6sNY4Pr27OyYdRaLUrDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssL6u+k+AAQCR9eHtLKvLfwAAAABJRU5ErkJggg==">
+<meta property="og:image" content="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAMAAABOo35HAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC9UExURVlZWdPT07KysmRkZIWFhfT09JmZmWZmZm9vb39/fxkZGUxMTDMzM3p6epCQkKamppubm729venp6cjIyN7e3tbW1s/Pz8LCwnx8fLS0tFZWVoiIiI+Pj6GhoeTk5Glpabu7u93d3evr66CgoJSUlKqqqsnJyeDg4Hd3d8PDw+Xl5bi4uNHR0dvb26Ojo6urq+fn51hYWDg4OCgoKHBwcK2traenp0FBQe7u7vHx8U5OTre3t8zMzHV1df///7GrnpQAAAA/dFJOU///////////////////////////////////////////////////////////////////////////////////AI4mfBcAAAUGSURBVHja7NoJb6M4GMZxY0NCD64kve/pMZ2d3Z297+X7f6zFNmBAMUXa6URl/q9UJSWPUPzrizFWRUlNLgEBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYYIEFAVhggQUWWGBBABZYYIEFFlgQgAUWWGCBBRYEYIEFFlhggQUBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYn6cCIcRXgvX/h9qcIVBqDdbEM8RCxGCB9QqXYRwHYDHBgwXWl8eKZKiESHI3Ba1kWs3fKixcaJUl1YyeBm7Ocq+yLItUiVBGnXxenSHJolIKEcwHq6ikbOX1YGVzQCTN8LPmSLreghUl9sN4Uw7yajMrLC0TZ1ImzqY6FEop0+pIaEN5HaoOxVuwEqFyc4I46uSlzOLqgxlh6UaR9l3VYWl9Fdoxb1Q90KJtu41pwwFW/WHhTtW8i7TafLCqRsk6bsGw63L9qurXRmuIlbT9lDQnlXU+nBFW1Q2qnZbDprWa2tjR90LZFqx1/+Td/HpGWLlrLDvIwTcx6dQ1Vrntbig68cDms3JwbA5Y1azs1ger6sNV/bbIw1jU81MvNAGrl58RVn8ozW+btF08iGFoAlYvP3csfVur1gJBEIA1uBmue5dhZDOyO2epbmgCVi8/I6x0MMHH9pjsTfBhNzQBq5uPZoQlB0uH3DZG4EZqQ26fL3sZq5uf09Ih6qw3i/pm6BZO0qZX7rrUS68Xsbr5ZE4rePMk08pk9aUZugfqppvs6AM1Acvlo/StP+6EbW06z8hJqxbYp2BZPQUnFsLsKuhQdaHqn5ewbF7KXIn0jWO5MqOQ7RaNLPtbNMmmhimj0GUmYLl8Gs0Lq4wyPbTu1l2QKqHSouzs3OlDIslW5SQsnY/NXmFplyNvEuuLV/Tau9BzwiraDUSwXmysztYWWNtL1psXeumgIrDGaqXvBfUuvtqUYI3V2t1wk1e2msFluJJm6zDJXv/fIfjPP7DAAgsssCiwwAILLLDAosACCyywwAKLAgsssMACC6zt9fDz/v75tyOB+98PD2+ORgKffjw4OP1uJPDxl+Xy8v1I4MPF3t7VNyOB4/vF4uzdzrG+39f1kz/w66Guv/yBvw90KX/gZKkr8Qf+2dOV+gNHC12/7RxrabD2/a31bLAO/a11YbAO/K21MFhLf2s9Gqw9f2vdGqzFu11jnVusE2/gxmI9eQOnFuvYG7i0WH7uK4t15w2cWazrXWP9a7H8f/bQYvm/6IPF+sF/pVssf19Ii/WH/0K2WH/uGuvEWC39gSdj9Twy+Rqri5EZx1gt/IE7Y/XoD1wbq9vd3w1PlufnD2OBp+ebm/uxwPHF6emnscDR4vLy41jg7vHq6sNY4Pr27OyYdRaLUrDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssL6u+k+AAQCR9eHtLKvLfwAAAABJRU5ErkJggg==">
+<meta property="og:image" content="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAMAAABOo35HAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC9UExURVlZWdPT07KysmRkZIWFhfT09JmZmWZmZm9vb39/fxkZGUxMTDMzM3p6epCQkKamppubm729venp6cjIyN7e3tbW1s/Pz8LCwnx8fLS0tFZWVoiIiI+Pj6GhoeTk5Glpabu7u93d3evr66CgoJSUlKqqqsnJyeDg4Hd3d8PDw+Xl5bi4uNHR0dvb26Ojo6urq+fn51hYWDg4OCgoKHBwcK2traenp0FBQe7u7vHx8U5OTre3t8zMzHV1df///7GrnpQAAAA/dFJOU///////////////////////////////////////////////////////////////////////////////////AI4mfBcAAAUGSURBVHja7NoJb6M4GMZxY0NCD64kve/pMZ2d3Z297+X7f6zFNmBAMUXa6URl/q9UJSWPUPzrizFWRUlNLgEBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYYIEFAVhggQUWWGBBABZYYIEFFlgQgAUWWGCBBRYEYIEFFlhggQUBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYn6cCIcRXgvX/h9qcIVBqDdbEM8RCxGCB9QqXYRwHYDHBgwXWl8eKZKiESHI3Ba1kWs3fKixcaJUl1YyeBm7Ocq+yLItUiVBGnXxenSHJolIKEcwHq6ikbOX1YGVzQCTN8LPmSLreghUl9sN4Uw7yajMrLC0TZ1ImzqY6FEop0+pIaEN5HaoOxVuwEqFyc4I46uSlzOLqgxlh6UaR9l3VYWl9Fdoxb1Q90KJtu41pwwFW/WHhTtW8i7TafLCqRsk6bsGw63L9qurXRmuIlbT9lDQnlXU+nBFW1Q2qnZbDprWa2tjR90LZFqx1/+Td/HpGWLlrLDvIwTcx6dQ1Vrntbig68cDms3JwbA5Y1azs1ger6sNV/bbIw1jU81MvNAGrl58RVn8ozW+btF08iGFoAlYvP3csfVur1gJBEIA1uBmue5dhZDOyO2epbmgCVi8/I6x0MMHH9pjsTfBhNzQBq5uPZoQlB0uH3DZG4EZqQ26fL3sZq5uf09Ih6qw3i/pm6BZO0qZX7rrUS68Xsbr5ZE4rePMk08pk9aUZugfqppvs6AM1Acvlo/StP+6EbW06z8hJqxbYp2BZPQUnFsLsKuhQdaHqn5ewbF7KXIn0jWO5MqOQ7RaNLPtbNMmmhimj0GUmYLl8Gs0Lq4wyPbTu1l2QKqHSouzs3OlDIslW5SQsnY/NXmFplyNvEuuLV/Tau9BzwiraDUSwXmysztYWWNtL1psXeumgIrDGaqXvBfUuvtqUYI3V2t1wk1e2msFluJJm6zDJXv/fIfjPP7DAAgsssCiwwAILLLDAosACCyywwAKLAgsssMACC6zt9fDz/v75tyOB+98PD2+ORgKffjw4OP1uJPDxl+Xy8v1I4MPF3t7VNyOB4/vF4uzdzrG+39f1kz/w66Guv/yBvw90KX/gZKkr8Qf+2dOV+gNHC12/7RxrabD2/a31bLAO/a11YbAO/K21MFhLf2s9Gqw9f2vdGqzFu11jnVusE2/gxmI9eQOnFuvYG7i0WH7uK4t15w2cWazrXWP9a7H8f/bQYvm/6IPF+sF/pVssf19Ii/WH/0K2WH/uGuvEWC39gSdj9Twy+Rqri5EZx1gt/IE7Y/XoD1wbq9vd3w1PlufnD2OBp+ebm/uxwPHF6emnscDR4vLy41jg7vHq6sNY4Pr27OyYdRaLUrDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssL6u+k+AAQCR9eHtLKvLfwAAAABJRU5ErkJggg==">
+<meta property="og:image" content="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAMAAABOo35HAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC9UExURVlZWdPT07KysmRkZIWFhfT09JmZmWZmZm9vb39/fxkZGUxMTDMzM3p6epCQkKamppubm729venp6cjIyN7e3tbW1s/Pz8LCwnx8fLS0tFZWVoiIiI+Pj6GhoeTk5Glpabu7u93d3evr66CgoJSUlKqqqsnJyeDg4Hd3d8PDw+Xl5bi4uNHR0dvb26Ojo6urq+fn51hYWDg4OCgoKHBwcK2traenp0FBQe7u7vHx8U5OTre3t8zMzHV1df///7GrnpQAAAA/dFJOU///////////////////////////////////////////////////////////////////////////////////AI4mfBcAAAUGSURBVHja7NoJb6M4GMZxY0NCD64kve/pMZ2d3Z297+X7f6zFNmBAMUXa6URl/q9UJSWPUPzrizFWRUlNLgEBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYYIEFAVhggQUWWGBBABZYYIEFFlgQgAUWWGCBBRYEYIEFFlhggQUBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYn6cCIcRXgvX/h9qcIVBqDdbEM8RCxGCB9QqXYRwHYDHBgwXWl8eKZKiESHI3Ba1kWs3fKixcaJUl1YyeBm7Ocq+yLItUiVBGnXxenSHJolIKEcwHq6ikbOX1YGVzQCTN8LPmSLreghUl9sN4Uw7yajMrLC0TZ1ImzqY6FEop0+pIaEN5HaoOxVuwEqFyc4I46uSlzOLqgxlh6UaR9l3VYWl9Fdoxb1Q90KJtu41pwwFW/WHhTtW8i7TafLCqRsk6bsGw63L9qurXRmuIlbT9lDQnlXU+nBFW1Q2qnZbDprWa2tjR90LZFqx1/+Td/HpGWLlrLDvIwTcx6dQ1Vrntbig68cDms3JwbA5Y1azs1ger6sNV/bbIw1jU81MvNAGrl58RVn8ozW+btF08iGFoAlYvP3csfVur1gJBEIA1uBmue5dhZDOyO2epbmgCVi8/I6x0MMHH9pjsTfBhNzQBq5uPZoQlB0uH3DZG4EZqQ26fL3sZq5uf09Ih6qw3i/pm6BZO0qZX7rrUS68Xsbr5ZE4rePMk08pk9aUZugfqppvs6AM1Acvlo/StP+6EbW06z8hJqxbYp2BZPQUnFsLsKuhQdaHqn5ewbF7KXIn0jWO5MqOQ7RaNLPtbNMmmhimj0GUmYLl8Gs0Lq4wyPbTu1l2QKqHSouzs3OlDIslW5SQsnY/NXmFplyNvEuuLV/Tau9BzwiraDUSwXmysztYWWNtL1psXeumgIrDGaqXvBfUuvtqUYI3V2t1wk1e2msFluJJm6zDJXv/fIfjPP7DAAgsssCiwwAILLLDAosACCyywwAKLAgsssMACC6zt9fDz/v75tyOB+98PD2+ORgKffjw4OP1uJPDxl+Xy8v1I4MPF3t7VNyOB4/vF4uzdzrG+39f1kz/w66Guv/yBvw90KX/gZKkr8Qf+2dOV+gNHC12/7RxrabD2/a31bLAO/a11YbAO/K21MFhLf2s9Gqw9f2vdGqzFu11jnVusE2/gxmI9eQOnFuvYG7i0WH7uK4t15w2cWazrXWP9a7H8f/bQYvm/6IPF+sF/pVssf19Ii/WH/0K2WH/uGuvEWC39gSdj9Twy+Rqri5EZx1gt/IE7Y/XoD1wbq9vd3w1PlufnD2OBp+ebm/uxwPHF6emnscDR4vLy41jg7vHq6sNY4Pr27OyYdRaLUrDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssL6u+k+AAQCR9eHtLKvLfwAAAABJRU5ErkJggg==">
+<meta property="og:updated_time" content="2019-10-09T14:46:15.048Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Windows调试之反调试">
+<meta name="twitter:description" content="Windows 调试中常见的反调试技巧技巧">
+<meta name="twitter:image" content="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAMAAABOo35HAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC9UExURVlZWdPT07KysmRkZIWFhfT09JmZmWZmZm9vb39/fxkZGUxMTDMzM3p6epCQkKamppubm729venp6cjIyN7e3tbW1s/Pz8LCwnx8fLS0tFZWVoiIiI+Pj6GhoeTk5Glpabu7u93d3evr66CgoJSUlKqqqsnJyeDg4Hd3d8PDw+Xl5bi4uNHR0dvb26Ojo6urq+fn51hYWDg4OCgoKHBwcK2traenp0FBQe7u7vHx8U5OTre3t8zMzHV1df///7GrnpQAAAA/dFJOU///////////////////////////////////////////////////////////////////////////////////AI4mfBcAAAUGSURBVHja7NoJb6M4GMZxY0NCD64kve/pMZ2d3Z297+X7f6zFNmBAMUXa6URl/q9UJSWPUPzrizFWRUlNLgEBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYYIEFAVhggQUWWGBBABZYYIEFFlgQgAUWWGCBBRYEYIEFFlhggQUBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYn6cCIcRXgvX/h9qcIVBqDdbEM8RCxGCB9QqXYRwHYDHBgwXWl8eKZKiESHI3Ba1kWs3fKixcaJUl1YyeBm7Ocq+yLItUiVBGnXxenSHJolIKEcwHq6ikbOX1YGVzQCTN8LPmSLreghUl9sN4Uw7yajMrLC0TZ1ImzqY6FEop0+pIaEN5HaoOxVuwEqFyc4I46uSlzOLqgxlh6UaR9l3VYWl9Fdoxb1Q90KJtu41pwwFW/WHhTtW8i7TafLCqRsk6bsGw63L9qurXRmuIlbT9lDQnlXU+nBFW1Q2qnZbDprWa2tjR90LZFqx1/+Td/HpGWLlrLDvIwTcx6dQ1Vrntbig68cDms3JwbA5Y1azs1ger6sNV/bbIw1jU81MvNAGrl58RVn8ozW+btF08iGFoAlYvP3csfVur1gJBEIA1uBmue5dhZDOyO2epbmgCVi8/I6x0MMHH9pjsTfBhNzQBq5uPZoQlB0uH3DZG4EZqQ26fL3sZq5uf09Ih6qw3i/pm6BZO0qZX7rrUS68Xsbr5ZE4rePMk08pk9aUZugfqppvs6AM1Acvlo/StP+6EbW06z8hJqxbYp2BZPQUnFsLsKuhQdaHqn5ewbF7KXIn0jWO5MqOQ7RaNLPtbNMmmhimj0GUmYLl8Gs0Lq4wyPbTu1l2QKqHSouzs3OlDIslW5SQsnY/NXmFplyNvEuuLV/Tau9BzwiraDUSwXmysztYWWNtL1psXeumgIrDGaqXvBfUuvtqUYI3V2t1wk1e2msFluJJm6zDJXv/fIfjPP7DAAgsssCiwwAILLLDAosACCyywwAKLAgsssMACC6zt9fDz/v75tyOB+98PD2+ORgKffjw4OP1uJPDxl+Xy8v1I4MPF3t7VNyOB4/vF4uzdzrG+39f1kz/w66Guv/yBvw90KX/gZKkr8Qf+2dOV+gNHC12/7RxrabD2/a31bLAO/a11YbAO/K21MFhLf2s9Gqw9f2vdGqzFu11jnVusE2/gxmI9eQOnFuvYG7i0WH7uK4t15w2cWazrXWP9a7H8f/bQYvm/6IPF+sF/pVssf19Ii/WH/0K2WH/uGuvEWC39gSdj9Twy+Rqri5EZx1gt/IE7Y/XoD1wbq9vd3w1PlufnD2OBp+ebm/uxwPHF6emnscDR4vLy41jg7vHq6sNY4Pr27OyYdRaLUrDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssL6u+k+AAQCR9eHtLKvLfwAAAABJRU5ErkJggg==">
+  <link rel="canonical" href="http://yoursite.com/2019/10/09/Windows调试之反调试/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Windows调试之反调试 | Assassin</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Assassin</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">For Fun</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-视频">
+      
+    
+
+    <a href="/videos/" rel="section"><i class="menu-item-icon fa fa-fw fa-video-camera"></i> <br>视频</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input" id="search-input"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+  
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/09/Windows调试之反调试/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Assassin">
+      <meta itemprop="description" content="For Fun">
+      <meta itemprop="image" content="/images/header.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Assassin">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">Windows调试之反调试
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-09 22:23:38 / 修改时间：22:46:15" itemprop="dateCreated datePublished" datetime="2019-10-09T22:23:38+08:00">2019-10-09</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Windows/" itemprop="url" rel="index"><span itemprop="name">Windows</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span>35k</span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span>32 分钟</span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Windows 调试中常见的反调试技巧技巧</p>
+<a id="more"></a>
+<p>文章参考houjingyi的文章架构，再次重新验证，并通过google，添加一些自己的东西，参考链接在后方。</p>
+<h2 id="一、探测Windows调试器"><a href="#一、探测Windows调试器" class="headerlink" title="一、探测Windows调试器"></a>一、探测Windows调试器</h2><p>恶意代码会使用多种技术探测调试器调试它的痕迹，其中包括使用Windows API、手动检测调试器人工痕迹的内存结构和查询调试器遗留在系统中的痕迹等。调试器探测是恶意代码最常用的反调试技术。</p>
+<h3 id="1-Windows-API"><a href="#1-Windows-API" class="headerlink" title="1 Windows API"></a>1 Windows API</h3><p>使用Windows API函数检测调试器是否存在是最简单的反调试技术。Windows操作系统中提供了这样一些API，应用程序可以通过调用这些API，来检测自己是否正在被调试。这些API中有些是专门用来检测调试器的存在的，而另外一些API是出于其他目的而设计的，但也可以被改造用来探测调试器的存在。其中很小部分API函数没有在微软官方文档显示。通常，防止恶意代码使用API进行反调试的最简单的办法是在恶意代码运行期间修改恶意代码，使其不能调用探测调试器的API函数，或者修改这些API函数的返回值，确保恶意代码执行合适的路径。与这些方法相比，较复杂的做法是挂钩这些函数，如使用rootkit技术。</p>
+<h4 id="1-1-IsDebuggerPresent"><a href="#1-1-IsDebuggerPresent" class="headerlink" title="1.1 IsDebuggerPresent"></a>1.1 IsDebuggerPresent</h4><p>IsDebuggerPresent查询进程环境块(PEB)中的IsDebugged标志。如果进程没有运行在调试器环境中，函数返回0；如果调试附加了进程，函数返回一个非零值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    return IsDebuggerPresent();  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们调试<br>32位<br><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAMAAABOo35HAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC9UExURVlZWdPT07KysmRkZIWFhfT09JmZmWZmZm9vb39/fxkZGUxMTDMzM3p6epCQkKamppubm729venp6cjIyN7e3tbW1s/Pz8LCwnx8fLS0tFZWVoiIiI+Pj6GhoeTk5Glpabu7u93d3evr66CgoJSUlKqqqsnJyeDg4Hd3d8PDw+Xl5bi4uNHR0dvb26Ojo6urq+fn51hYWDg4OCgoKHBwcK2traenp0FBQe7u7vHx8U5OTre3t8zMzHV1df///7GrnpQAAAA/dFJOU///////////////////////////////////////////////////////////////////////////////////AI4mfBcAAAUGSURBVHja7NoJb6M4GMZxY0NCD64kve/pMZ2d3Z297+X7f6zFNmBAMUXa6URl/q9UJSWPUPzrizFWRUlNLgEBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYYIEFAVhggQUWWGBBABZYYIEFFlgQgAUWWGCBBRYEYIEFFlhggQUBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYn6cCIcRXgvX/h9qcIVBqDdbEM8RCxGCB9QqXYRwHYDHBgwXWl8eKZKiESHI3Ba1kWs3fKixcaJUl1YyeBm7Ocq+yLItUiVBGnXxenSHJolIKEcwHq6ikbOX1YGVzQCTN8LPmSLreghUl9sN4Uw7yajMrLC0TZ1ImzqY6FEop0+pIaEN5HaoOxVuwEqFyc4I46uSlzOLqgxlh6UaR9l3VYWl9Fdoxb1Q90KJtu41pwwFW/WHhTtW8i7TafLCqRsk6bsGw63L9qurXRmuIlbT9lDQnlXU+nBFW1Q2qnZbDprWa2tjR90LZFqx1/+Td/HpGWLlrLDvIwTcx6dQ1Vrntbig68cDms3JwbA5Y1azs1ger6sNV/bbIw1jU81MvNAGrl58RVn8ozW+btF08iGFoAlYvP3csfVur1gJBEIA1uBmue5dhZDOyO2epbmgCVi8/I6x0MMHH9pjsTfBhNzQBq5uPZoQlB0uH3DZG4EZqQ26fL3sZq5uf09Ih6qw3i/pm6BZO0qZX7rrUS68Xsbr5ZE4rePMk08pk9aUZugfqppvs6AM1Acvlo/StP+6EbW06z8hJqxbYp2BZPQUnFsLsKuhQdaHqn5ewbF7KXIn0jWO5MqOQ7RaNLPtbNMmmhimj0GUmYLl8Gs0Lq4wyPbTu1l2QKqHSouzs3OlDIslW5SQsnY/NXmFplyNvEuuLV/Tau9BzwiraDUSwXmysztYWWNtL1psXeumgIrDGaqXvBfUuvtqUYI3V2t1wk1e2msFluJJm6zDJXv/fIfjPP7DAAgsssCiwwAILLLDAosACCyywwAKLAgsssMACC6zt9fDz/v75tyOB+98PD2+ORgKffjw4OP1uJPDxl+Xy8v1I4MPF3t7VNyOB4/vF4uzdzrG+39f1kz/w66Guv/yBvw90KX/gZKkr8Qf+2dOV+gNHC12/7RxrabD2/a31bLAO/a11YbAO/K21MFhLf2s9Gqw9f2vdGqzFu11jnVusE2/gxmI9eQOnFuvYG7i0WH7uK4t15w2cWazrXWP9a7H8f/bQYvm/6IPF+sF/pVssf19Ii/WH/0K2WH/uGuvEWC39gSdj9Twy+Rqri5EZx1gt/IE7Y/XoD1wbq9vd3w1PlufnD2OBp+ebm/uxwPHF6emnscDR4vLy41jg7vHq6sNY4Pr27OyYdRaLUrDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssL6u+k+AAQCR9eHtLKvLfwAAAABJRU5ErkJggg==" data-original="./1569466130853.png" alt="Alt text"><br>64位<br><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAMAAABOo35HAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC9UExURVlZWdPT07KysmRkZIWFhfT09JmZmWZmZm9vb39/fxkZGUxMTDMzM3p6epCQkKamppubm729venp6cjIyN7e3tbW1s/Pz8LCwnx8fLS0tFZWVoiIiI+Pj6GhoeTk5Glpabu7u93d3evr66CgoJSUlKqqqsnJyeDg4Hd3d8PDw+Xl5bi4uNHR0dvb26Ojo6urq+fn51hYWDg4OCgoKHBwcK2traenp0FBQe7u7vHx8U5OTre3t8zMzHV1df///7GrnpQAAAA/dFJOU///////////////////////////////////////////////////////////////////////////////////AI4mfBcAAAUGSURBVHja7NoJb6M4GMZxY0NCD64kve/pMZ2d3Z297+X7f6zFNmBAMUXa6URl/q9UJSWPUPzrizFWRUlNLgEBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYYIEFAVhggQUWWGBBABZYYIEFFlgQgAUWWGCBBRYEYIEFFlhggQUBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYn6cCIcRXgvX/h9qcIVBqDdbEM8RCxGCB9QqXYRwHYDHBgwXWl8eKZKiESHI3Ba1kWs3fKixcaJUl1YyeBm7Ocq+yLItUiVBGnXxenSHJolIKEcwHq6ikbOX1YGVzQCTN8LPmSLreghUl9sN4Uw7yajMrLC0TZ1ImzqY6FEop0+pIaEN5HaoOxVuwEqFyc4I46uSlzOLqgxlh6UaR9l3VYWl9Fdoxb1Q90KJtu41pwwFW/WHhTtW8i7TafLCqRsk6bsGw63L9qurXRmuIlbT9lDQnlXU+nBFW1Q2qnZbDprWa2tjR90LZFqx1/+Td/HpGWLlrLDvIwTcx6dQ1Vrntbig68cDms3JwbA5Y1azs1ger6sNV/bbIw1jU81MvNAGrl58RVn8ozW+btF08iGFoAlYvP3csfVur1gJBEIA1uBmue5dhZDOyO2epbmgCVi8/I6x0MMHH9pjsTfBhNzQBq5uPZoQlB0uH3DZG4EZqQ26fL3sZq5uf09Ih6qw3i/pm6BZO0qZX7rrUS68Xsbr5ZE4rePMk08pk9aUZugfqppvs6AM1Acvlo/StP+6EbW06z8hJqxbYp2BZPQUnFsLsKuhQdaHqn5ewbF7KXIn0jWO5MqOQ7RaNLPtbNMmmhimj0GUmYLl8Gs0Lq4wyPbTu1l2QKqHSouzs3OlDIslW5SQsnY/NXmFplyNvEuuLV/Tau9BzwiraDUSwXmysztYWWNtL1psXeumgIrDGaqXvBfUuvtqUYI3V2t1wk1e2msFluJJm6zDJXv/fIfjPP7DAAgsssCiwwAILLLDAosACCyywwAKLAgsssMACC6zt9fDz/v75tyOB+98PD2+ORgKffjw4OP1uJPDxl+Xy8v1I4MPF3t7VNyOB4/vF4uzdzrG+39f1kz/w66Guv/yBvw90KX/gZKkr8Qf+2dOV+gNHC12/7RxrabD2/a31bLAO/a11YbAO/K21MFhLf2s9Gqw9f2vdGqzFu11jnVusE2/gxmI9eQOnFuvYG7i0WH7uK4t15w2cWazrXWP9a7H8f/bQYvm/6IPF+sF/pVssf19Ii/WH/0K2WH/uGuvEWC39gSdj9Twy+Rqri5EZx1gt/IE7Y/XoD1wbq9vd3w1PlufnD2OBp+ebm/uxwPHF6emnscDR4vLy41jg7vHq6sNY4Pr27OyYdRaLUrDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssL6u+k+AAQCR9eHtLKvLfwAAAABJRU5ErkJggg==" data-original="./1569466158549.png" alt="Alt text"><br>在32位系统FS寄存器的偏移量30h处存在PEB（进程环境块），而在X64上，PEB（进程环境块）存在于GS段寄存器的偏移量60h处<br>在其+2的偏移处存在标志BeingDebugged。读取其位置即可得到是否处于调试状态</p>
+<p>1.2 CheckRemoteDebuggerPresent<br>它不仅可以探测系统其他进程是否被调试，通过传递自身进程句柄还可以探测自身是否被调试。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    BOOL ret;  </span><br><span class="line">    CheckRemoteDebuggerPresent(GetCurrentProcess(), &amp;ret);  </span><br><span class="line">    return ret;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CheckRemoteDebuggerPresent实际上是通过NT(ZW)QueryInformationProcess进行反调试的，下一个讲。</p>
+<h4 id="1-3-NtQueryInformationProcess"><a href="#1-3-NtQueryInformationProcess" class="headerlink" title="1.3 NtQueryInformationProcess"></a>1.3 NtQueryInformationProcess</h4><p>这个函数是Ntdll.dll中一个API，它用来提取一个给定进程的信息。它的第一个参数是进程句柄，第二个参数告诉我们它需要提取进程信息的类型。为第二个参数指定特定值并调用该函数，相关信息就会设置到第三个参数。第二个参数是一个枚举类型，其中与反调试有关的成员有ProcessBasicInformation（0）,ProcessDebugPort(0x7)、ProcessDebugObjectHandle(0x1E)和ProcessDebugFlags(0x1F)。例如将该参数置为ProcessDebugPort，如果进程正在被调试，则返回调试端口，否则返回0。<br>这里0x1E和0x1F是未公开的标志位，详情<br><span class="exturl" data-url="aHR0cHM6Ly9jdGYtd2lraS5naXRodWIuaW8vY3RmLXdpa2kvcmV2ZXJzZS93aW5kb3dzL2FudGktZGVidWcvbnRxdWVyeWluZm9ybWF0aW9ucHJvY2Vzcy16aC8=" title="https://ctf-wiki.github.io/ctf-wiki/reverse/windows/anti-debug/ntqueryinformationprocess-zh/">https://ctf-wiki.github.io/ctf-wiki/reverse/windows/anti-debug/ntqueryinformationprocess-zh/<i class="fa fa-external-link"></i></span></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">typedef NTSTATUS (*NtQueryInformationProcessPtr)(</span><br><span class="line">	IN HANDLE           ProcessHandle,</span><br><span class="line">	IN int				ProcessInformationClass,</span><br><span class="line">	OUT PVOID           ProcessInformation,</span><br><span class="line">	IN ULONG            ProcessInformationLength,</span><br><span class="line">	OUT PULONG          ReturnLength</span><br><span class="line">);</span><br><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    int debugPort = 0;  </span><br><span class="line">    HMODULE hModule = LoadLibrary(&quot;Ntdll.dll&quot;);  </span><br><span class="line">    NtQueryInformationProcessPtr NtQueryInformationProcess = (NtQueryInformationProcessPtr)GetProcAddress(hModule, &quot;NtQueryInformationProcess&quot;);  </span><br><span class="line">    NtQueryInformationProcess(GetCurrentProcess(), 0x7, &amp;debugPort, sizeof(debugPort), NULL);  </span><br><span class="line">    return debugPort != 0;  </span><br><span class="line">&#125;  </span><br><span class="line">   </span><br><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    HANDLE hdebugObject = NULL;  </span><br><span class="line">    HMODULE hModule = LoadLibrary(&quot;Ntdll.dll&quot;);  </span><br><span class="line">    NtQueryInformationProcessPtr NtQueryInformationProcess = (NtQueryInformationProcessPtr)GetProcAddress(hModule, &quot;NtQueryInformationProcess&quot;);  </span><br><span class="line">    NtQueryInformationProcess(GetCurrentProcess(), 0x1E, &amp;hdebugObject, sizeof(hdebugObject), NULL);  </span><br><span class="line">    return hdebugObject != NULL;  </span><br><span class="line">&#125;  </span><br><span class="line">   </span><br><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    BOOL bdebugFlag = TRUE;  </span><br><span class="line">    HMODULE hModule = LoadLibrary(&quot;Ntdll.dll&quot;);  </span><br><span class="line">    NtQueryInformationProcessPtr NtQueryInformationProcess = (NtQueryInformationProcessPtr)GetProcAddress(hModule, &quot;NtQueryInformationProcess&quot;);  </span><br><span class="line">    NtQueryInformationProcess(GetCurrentProcess(), 0x1F, &amp;bdebugFlag, sizeof(bdebugFlag), NULL);  </span><br><span class="line">    return bdebugFlag != TRUE;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来还有几种就不分开说了，一个Check例子概括<br>NtQuerySytemInformation             SystemKernelDebuggerInformation(0x23)   个人测试仅WIN 7有效<br>NtQueryObject                               ObjectAllInformation(0x3)  这个较复杂，没测试，可参考<span class="exturl" data-url="aHR0cDovL3d3dy52b2lkY24uY29tL2FydGljbGUvcC1kaHpweGF5ei1iYm4uaHRtbA==" title="http://www.voidcn.com/article/p-dhzpxayz-bbn.html">http://www.voidcn.com/article/p-dhzpxayz-bbn.html<i class="fa fa-external-link"></i></span></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">typedef NTSTATUS(*NtQuerySytemInformationPtr)(</span><br><span class="line">	_In_      int SystemInformationClass,</span><br><span class="line">	_Inout_   PVOID                    SystemInformation,</span><br><span class="line">	_In_      ULONG                    SystemInformationLength,</span><br><span class="line">	_Out_opt_ PULONG                   ReturnLength</span><br><span class="line">	);</span><br><span class="line">typedef struct _SYSTEM_KERNEL_DEBUGGER_INFORMATION</span><br><span class="line">&#123;</span><br><span class="line">	BOOLEAN DebuggerEnabled;</span><br><span class="line">	BOOLEAN DebuggerNotPresent;</span><br><span class="line">&#125; SYSTEM_KERNEL_DEBUGGER_INFORMATION, *PSYSTEM_KERNEL_DEBUGGER_INFORMATION;</span><br><span class="line">BOOL CheckDebug10()</span><br><span class="line">&#123;</span><br><span class="line">	BOOL bdebugFlag = TRUE;</span><br><span class="line"></span><br><span class="line">	HMODULE hModule = LoadLibrary(&quot;Ntdll.dll&quot;);</span><br><span class="line">	NtQuerySytemInformationPtr NtQuerySystemInformation = (NtQuerySytemInformationPtr)GetProcAddress(hModule,&quot;NtQuerySystemInformation&quot;);</span><br><span class="line"></span><br><span class="line">	ULONG SystemKernelDebuggerInformation = 0x23;</span><br><span class="line">	ULONG ulReturnedLength = 0;</span><br><span class="line">	SYSTEM_KERNEL_DEBUGGER_INFORMATION DebuggerInfo = &#123; 0, &#125;;</span><br><span class="line"></span><br><span class="line">	NtQuerySystemInformation(SystemKernelDebuggerInformation,(PVOID)&amp;DebuggerInfo,sizeof(DebuggerInfo),&amp;ulReturnedLength);</span><br><span class="line"></span><br><span class="line">	printf(&quot;NtQuerySystemInformation(SystemKernelDebuggerInformation) = 0x%X 0x%X\n&quot;,DebuggerInfo.DebuggerEnabled, DebuggerInfo.DebuggerNotPresent);</span><br><span class="line">	return DebuggerInfo.DebuggerEnabled == TRUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-4-GetLastError"><a href="#1-4-GetLastError" class="headerlink" title="1.4 GetLastError"></a>1.4 GetLastError</h4><p>编写应用程序时，经常需要涉及到错误处理问题。许多函数调用只用TRUE和FALSE来表明函数的运行结果。一旦出现错误，MSDN中往往会指出请用GetLastError()函数来获得错误原因。恶意代码可以使用异常来破坏或者探测调试器。调试器捕获异常后，并不会立即将处理权返回被调试进程处理，大多数利用异常的反调试技术往往据此来检测调试器。多数调试器默认的设置是捕获异常后不将异常传递给应用程序。如果调试器不能将异常结果正确返回到被调试进程，那么这种异常失效可以被进程内部的异常处理机制探测。</p>
+<p>该方法失效<br><del>BOOL CheckDebug()</del><br><del>{</del><br><del>~    DWORD errorValue = 12345; ~</del><br><del>~    SetLastError(errorValue);</del><br><del>~    OutputDebugString(“Test for debugger!”); ~</del><br><del>~    if (GetLastError() == errorValue) ~</del><br><del>~    { ~</del><br><del>~        return TRUE;  ~</del><br><del>~    }  ~</del><br><del>~    else  ~</del><br><del>~   {  ~</del><br><del>~        return FALSE;  ~</del><br><del>~    }  ~</del><br><del>} ~</del></p>
+<p>DeleteFiber方法失效<br><del>char fib[1024] = { 0 };DeleteFiber(fib);return (GetLastError() != 0x57);</del></p>
+<p>不过这里存在方法还可以使用<br>使用CloseHandle、ntclose、<del>CloseWindow</del>产生异常，使得错误码改变。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    DWORD ret = CloseHandle((HANDLE)0x1234);  </span><br><span class="line">    if (ret != 0 || GetLastError() != ERROR_INVALID_HANDLE)  </span><br><span class="line">    &#123;  </span><br><span class="line">        return TRUE;  </span><br><span class="line">    &#125;  </span><br><span class="line">    else  </span><br><span class="line">    &#123;  </span><br><span class="line">        return FALSE;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-5-ZwSetInformationThread-、NtCreateThreadEx"><a href="#1-5-ZwSetInformationThread-、NtCreateThreadEx" class="headerlink" title="1.5 ZwSetInformationThread 、NtCreateThreadEx"></a>1.5 ZwSetInformationThread 、NtCreateThreadEx</h4><p><strong>注意，在strong OD中，似乎插件存在冲突，所以，在过这个的时候建议call xxx nop 掉，注意是nop call这条语句，注意堆栈平衡</strong><br>ZwSetInformationThread拥有两个参数，第一个参数用来接收当前线程的句柄，第二个参数表示线程信息类型，若其值设置为ThreadHideFromDebugger(0x11)，使用语句ZwSetInformationThread(GetCurrentThread(), ThreadHideFromDebugger, NULL, 0);调用该函数后，调试进程就会被分离出来。该函数不会对正常运行的程序产生任何影响，但若运行的是调试器程序，因为该函数隐藏了当前线程，调试器无法再收到该线程的调试事件，最终停止调试。还有一个函数DebugActiveProcessStop用来分离调试器和被调试进程，从而停止调试。两个API容易混淆，需要牢记它们的区别<br>接下来是一个ZwSetInformationThread的例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">DWORD WINAPI MyThread()</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;thread\r\n&quot;);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line">DWORD WINAPI MyThread2()</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;threa2\r\n&quot;);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line">typedef NTSTATUS(*NtSetInformationThreadPtr)(HANDLE threadHandle,</span><br><span class="line"></span><br><span class="line">	THREAD_INFORMATION_CLASS  threadInformationClass,</span><br><span class="line"></span><br><span class="line">	PVOID threadInformation,</span><br><span class="line"></span><br><span class="line">	ULONG threadInformationLength);</span><br><span class="line">void MyNtSetInformationThreadApproach(HANDLE hThread)</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">	HMODULE hModule = LoadLibrary(TEXT(&quot;ntdll.dll&quot;));</span><br><span class="line"></span><br><span class="line">	NtSetInformationThreadPtr NtSetInformationThread = (NtSetInformationThreadPtr)GetProcAddress(hModule, &quot;NtSetInformationThread&quot;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	NtSetInformationThread(hThread, (THREAD_INFORMATION_CLASS)0x11, 0, 0);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	HANDLE hThread[2];</span><br><span class="line">	DWORD ThreadID;</span><br><span class="line"></span><br><span class="line">	hThread[0] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)MyThread, NULL, 0, &amp;ThreadID);</span><br><span class="line">	hThread[1] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)MyThread2, NULL, 0, &amp;ThreadID);</span><br><span class="line">	MyNtSetInformationThreadApproach(hThread[0]);</span><br><span class="line">	Sleep(10000);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试过程，发现，只要在hThread[0]的回调下断点，就会崩溃，因为调试器下断CC，因为不能接受其断点，导致异常，故可以反调试，如果该API作用于主线程，则不能下断点，否则会崩溃。<br>同理<br>Windows Vista引入了NtCreateThreadEx函数，其签名如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">NTSTATUS NTAPI NtCreateThreadEx (</span><br><span class="line">    _Out_    PHANDLE              ThreadHandle,</span><br><span class="line">    _In_     ACCESS_MASK          DesiredAccess,</span><br><span class="line">    _In_opt_ POBJECT_ATTRIBUTES   ObjectAttributes,</span><br><span class="line">    _In_     HANDLE               ProcessHandle,</span><br><span class="line">    _In_     PVOID                StartRoutine,</span><br><span class="line">    _In_opt_ PVOID                Argument,</span><br><span class="line">    _In_     ULONG                CreateFlags,</span><br><span class="line">    _In_opt_ ULONG_PTR            ZeroBits,</span><br><span class="line">    _In_opt_ SIZE_T               StackSize,</span><br><span class="line">    _In_opt_ SIZE_T               MaximumStackSize,</span><br><span class="line">    _In_opt_ PVOID                AttributeList</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>有趣的参数是CreateFlgs。此参数获取如下标志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#define THREAD_CREATE_FLAGS_CREATE_SUSPENDED 0x00000001</span><br><span class="line">#define THREAD_CREATE_FLAGS_SKIP_THREAD_ATTACH 0x00000002</span><br><span class="line">#define THREAD_CREATE_FLAGS_HIDE_FROM_DEBUGGER 0x00000004</span><br><span class="line">#define THREAD_CREATE_FLAGS_HAS_SECURITY_DESCRIPTOR 0x00000010</span><br><span class="line">#define THREAD_CREATE_FLAGS_ACCESS_CHECK_IN_TARGET 0x00000020</span><br><span class="line">#define THREAD_CREATE_FLAGS_INITIAL_THREAD 0x00000080</span><br></pre></td></tr></table></figure>
+
+<p>如果新线程获得THREAD_CREATE_FLAGS_HIDE_FROM_DEBUGGER标志，则在创建时将对调试器隐藏该线程。这与NtSetInformationThread函数设置的ThreadHideFromDebugger相同。负责安全任务的代码可以在设置了THREAD_CREATE_FLAGS_HIDE_FROM_DEBUGGER标志的线程中执行。</p>
+<p>DebugActiveProcessStop API，结合调试器，可以做出一个比较有趣的反调试或者反附加的方法。</p>
+<h3 id="2-手动检测数据结构"><a href="#2-手动检测数据结构" class="headerlink" title="2.手动检测数据结构"></a>2.手动检测数据结构</h3><p>虽然使用Windows API是探测调试器存在的最简单办法，但手动检查数据结构是恶意代码编写者最常使用的办法。这是因为很多时候通过Windows API实现的反调试技术无效，例如这些API函数被rootkit挂钩，并返回错误信息。因此，恶意代码编写者经常手动执行与这些API功能相同的操作。在手动检测中，PEB结构中的一些标志暴露了调试器存在的信息。这里，我们关注检测调试器存在常用的一些标志。</p>
+<h4 id="2-1-检测BeingDebugged属性"><a href="#2-1-检测BeingDebugged属性" class="headerlink" title="2.1 检测BeingDebugged属性"></a>2.1 检测BeingDebugged属性</h4><p>Windows操作系统维护着每个正在运行的进程的PEB结构，它包含与这个进程相关的所有用户态参数。这些参数包括进程环境数据，环境数据包括环境变量、加载的模块列表、内存地址，以及调试器状态。<br>就像我们之前说的<br>PEB结构在32位和64位有些差别<br>因为x64 VS不许内联汇编，所以这里就不举例子了<br>关于x64的PEB结构<br>可以参考<br><span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC83NTkwODJkNDA0NzE=" title="https://www.jianshu.com/p/759082d40471">https://www.jianshu.com/p/759082d40471<i class="fa fa-external-link"></i></span></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//x86</span></span><br><span class="line"><span class="function">BOOL <span class="title">CheckDebug6</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	__asm</span><br><span class="line">	&#123;</span><br><span class="line">		mov eax, fs:[<span class="number">30</span>h]</span><br><span class="line">		mov al, BYTE PTR[eax + <span class="number">2</span>]</span><br><span class="line">		<span class="keyword">and</span> eax,<span class="number">0x1</span></span><br><span class="line">		mov result, eax</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result != <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2检测ProcessHeap属性"><a href="#2-2检测ProcessHeap属性" class="headerlink" title="2.2检测ProcessHeap属性"></a>2.2检测ProcessHeap属性</h4><p>Reserved数组中一个未公开的位置叫作ProcessHeap，它被设置为加载器为进程分配的第一个堆的位置。ProcessHeap位于PEB结构的0x18处。第一个堆头部有一个属性字段，它告诉内核这个堆是否在调试器中创建。这些属性叫作ForceFlags和Flags。在Windows XP系统中，ForceFlags属性位于堆头部偏移量0x10处；在Windows 7系统中，对于32位的应用程序来说ForceFlags属性位于堆头部偏移量0x44处。<br>同样，恶意代码也可以检查Windows XP系统中偏移量0x0C处，或者Windows 7系统中偏移量0x40处的Flags属性。这个属性总与ForceFlags属性大致相同，但通常情况下Flags与值2进行比较。<br>其中注意在VS中调试会出现问题，利用原版的OD查看是可以实现反调试的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">//ForceFlags</span><br><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    int result = 0;  </span><br><span class="line">    DWORD dwVersion = GetVersion();  </span><br><span class="line">    DWORD dwWindowsMajorVersion = (DWORD)(LOBYTE(LOWORD(dwVersion)));  </span><br><span class="line">    //for xp  </span><br><span class="line">    if (dwWindowsMajorVersion == 5)  </span><br><span class="line">    &#123;  </span><br><span class="line">        __asm  </span><br><span class="line">        &#123;  </span><br><span class="line">            mov eax, fs:[30h]  </span><br><span class="line">            mov eax, [eax + 18h]  </span><br><span class="line">            mov eax, [eax + 10h]  </span><br><span class="line">            mov result, eax  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    else  </span><br><span class="line">    &#123;  </span><br><span class="line">        __asm  </span><br><span class="line">        &#123;  </span><br><span class="line">            mov eax, fs:[30h]  </span><br><span class="line">            mov eax, [eax + 18h]  </span><br><span class="line">            mov eax, [eax + 44h]  </span><br><span class="line">            mov result, eax  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    return result != 0;  </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">//Flags</span><br><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    int result = 0;  </span><br><span class="line">    DWORD dwVersion = GetVersion();  </span><br><span class="line">    DWORD dwWindowsMajorVersion = (DWORD)(LOBYTE(LOWORD(dwVersion)));  </span><br><span class="line">    //for xp  </span><br><span class="line">    if (dwWindowsMajorVersion == 5)  </span><br><span class="line">    &#123;  </span><br><span class="line">        __asm  </span><br><span class="line">        &#123;  </span><br><span class="line">            mov eax, fs:[30h]  </span><br><span class="line">            mov eax, [eax + 18h]  </span><br><span class="line">            mov eax, [eax + 0ch]  </span><br><span class="line">            mov result, eax  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    else  </span><br><span class="line">    &#123;  </span><br><span class="line">        __asm  </span><br><span class="line">        &#123;  </span><br><span class="line">            mov eax, fs:[30h]  </span><br><span class="line">            mov eax, [eax + 18h]  </span><br><span class="line">            mov eax, [eax + 40h]  </span><br><span class="line">            mov result, eax  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    return result != 2;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3检测NTGlobalFlag"><a href="#2-3检测NTGlobalFlag" class="headerlink" title="2.3检测NTGlobalFlag"></a>2.3检测NTGlobalFlag</h4><p>由于调试器中启动进程与正常模式下启动进程有些不同，所以它们创建内存堆的方式也不同。系统使用PEB结构偏移量0x68处的一个未公开位置，来决定如何创建堆结构。如果这个位置的值为0x70，我们就知道进程正运行在调试器中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    int result = 0;  </span><br><span class="line">    __asm  </span><br><span class="line">    &#123;  </span><br><span class="line">        mov eax, fs:[30h]  </span><br><span class="line">        mov eax, [eax + 68h]  </span><br><span class="line">        and eax, 0x70  </span><br><span class="line">        mov result, eax  </span><br><span class="line">    &#125;  </span><br><span class="line">    return result != 0;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>操作系统创建堆时，值0x70是下列标志的一个组合。如果进程从调试器启动，那么进程的这些标志将被设置。<br>(FLG_HEAP_ENABLE_TAIL_CHECK|FLG_HEAP_ENABLE_FREE_CHECK|FLG_HEAP_VALIDATE_PARAMETERS)<br>避免这种问题方法和前面的差不多。如果用OllyDbg的命令行插件修改，输入的命令为dump fs:[30]+0x68。如果用PhantOm插件，它会逃避使用NTGlobalFlag的反调试技术而不需要手动设置。</p>
+<h4 id="2-4-扫描堆特征-只适用于XP"><a href="#2-4-扫描堆特征-只适用于XP" class="headerlink" title="2.4 扫描堆特征(只适用于XP)"></a>2.4 扫描堆特征(只适用于XP)</h4><p>调试进程时，其堆内存就会出现一些特殊的标识，表示它正处于被调试状态。这些标识中最醒目的是在未使用的堆内存区域中填充着OxFEEEFEEE。我们利用这一特征即可判断进程是否处于被调试状态。PEB.Ldr成员指向一个_PEB_LDR_DATA结构体，而这个结构体就是在堆内存区域中创建的，所以我们可以扫描该区域来判断进程是否处于调试状态下。测试代码如下<br><strong>该代码并不适用WIN 7 WIN10 ，只适用于XP</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug9()</span><br><span class="line">&#123;</span><br><span class="line">	LPBYTE pLdr;</span><br><span class="line"></span><br><span class="line">	DWORD pLdrSig[4] = &#123; 0xEEFEEEFE,0xEEFEEEFE,0xEEFEEEFE,0xEEFEEEFE &#125;;</span><br><span class="line">	__asm</span><br><span class="line">	&#123;</span><br><span class="line">		mov eax, fs:[0x30]; //PEB地址</span><br><span class="line">		mov eax, [eax + 0xC];//Ldr</span><br><span class="line">		mov pLdr, eax;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	__try</span><br><span class="line">	&#123;</span><br><span class="line">		while (1)</span><br><span class="line">		&#123;</span><br><span class="line">			if (!memcmp(pLdr, pLdrSig, sizeof(pLdrSig)))</span><br><span class="line">			&#123;</span><br><span class="line">				return true;</span><br><span class="line">			&#125;</span><br><span class="line">			else</span><br><span class="line">			&#123;</span><br><span class="line">				pLdr++;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	__except (EXCEPTION_EXECUTE_HANDLER)</span><br><span class="line">	&#123;</span><br><span class="line">		return false;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-系统痕迹检测"><a href="#3-系统痕迹检测" class="headerlink" title="3.系统痕迹检测"></a>3.系统痕迹检测</h3><p>通常，我们使用调试工具来分析恶意代码，但这些工具会在系统中驻留一些痕迹。恶意代码通过搜索这种系统痕迹，来确定你是否试图分析它。</p>
+<h4 id="3-1查找调试器引用的注册表项"><a href="#3-1查找调试器引用的注册表项" class="headerlink" title="3.1查找调试器引用的注册表项"></a>3.1查找调试器引用的注册表项</h4><p>下面是调试器在注册表中的一个常用位置。<br>SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug(32位系统)<br>SOFTWARE\Wow6432Node\Microsoft\WindowsNT\CurrentVersion\AeDebug(64位系统)<br>该注册表项指定当应用程序发生错误时，触发哪一个调试器。默认情况下，它被设置为Dr.Watson。如果该这册表的键值被修改为OllyDbg，则恶意代码就可能确定它正在被调试。</p>
+<p>当然，现在很多调试器已经不会再这个位置，但是我们可以根据情况，打开regedit,存在调试器类的字符串就退出并删除程序，防止落入逆向人员的手中也是一种办法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug13()</span><br><span class="line">&#123;</span><br><span class="line">	BOOL is_64;</span><br><span class="line">	IsWow64Process(GetCurrentProcess(), &amp;is_64);</span><br><span class="line">	HKEY hkey = NULL;</span><br><span class="line">	char key[] = &quot;Debugger&quot;;</span><br><span class="line">	char reg_dir_32bit[] = &quot;SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AeDebug&quot;;</span><br><span class="line">	char reg_dir_64bit[] = &quot;SOFTWARE\\Wow6432Node\\Microsoft\\WindowsNT\\CurrentVersion\\AeDebug&quot;;</span><br><span class="line">	DWORD ret = 0;</span><br><span class="line">	if (is_64)</span><br><span class="line">	&#123;</span><br><span class="line">		ret = RegCreateKeyA(HKEY_LOCAL_MACHINE, reg_dir_64bit, &amp;hkey);</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		ret = RegCreateKeyA(HKEY_LOCAL_MACHINE, reg_dir_32bit, &amp;hkey);</span><br><span class="line">	&#125;</span><br><span class="line">	if (ret != ERROR_SUCCESS)</span><br><span class="line">	&#123;</span><br><span class="line">		return FALSE;</span><br><span class="line">	&#125;</span><br><span class="line">	char tmp[256];</span><br><span class="line">	DWORD len = 256;</span><br><span class="line">	DWORD type;</span><br><span class="line">	ret = RegQueryValueExA(hkey, key, NULL, &amp;type, (LPBYTE)tmp, &amp;len);</span><br><span class="line">	if (strstr(tmp, &quot;OllyIce&quot;) != NULL || strstr(tmp, &quot;OllyDBG&quot;) != NULL || strstr(tmp, &quot;WinDbg&quot;) != NULL || strstr(tmp, &quot;x64dbg&quot;) != NULL || strstr(tmp, &quot;Immunity&quot;) != NULL)</span><br><span class="line">	&#123;</span><br><span class="line">		return TRUE;</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		return FALSE;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2查找窗体信息"><a href="#3-2查找窗体信息" class="headerlink" title="3.2查找窗体信息"></a>3.2查找窗体信息</h4><p>FindWindow函数检索处理顶级窗口的类名和窗口名称匹配指定的字符串。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    if (FindWindowA(&quot;OLLYDBG&quot;, NULL)!=NULL || FindWindowA(&quot;WinDbgFrameClass&quot;, NULL)!=NULL || FindWindowA(&quot;QWidget&quot;, NULL)!=NULL)  </span><br><span class="line">    &#123;  </span><br><span class="line">        return TRUE;  </span><br><span class="line">    &#125;  </span><br><span class="line">    else  </span><br><span class="line">    &#123;  </span><br><span class="line">        return FALSE;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>EnumWindows函数枚举所有屏幕上的顶层窗口，并将窗口句柄传送给应用程序定义的回调函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">BOOL CALLBACK EnumWndProc(HWND hwnd, LPARAM lParam)    </span><br><span class="line">&#123;    </span><br><span class="line">    char cur_window[1024];  </span><br><span class="line">    GetWindowTextA(hwnd, cur_window, 1023);  </span><br><span class="line">    if (strstr(cur_window, &quot;WinDbg&quot;)!=NULL || strstr(cur_window, &quot;x64_dbg&quot;)!=NULL || strstr(cur_window, &quot;OllyICE&quot;)!=NULL || strstr(cur_window, &quot;OllyDBG&quot;)!=NULL || strstr(cur_window, &quot;Immunity&quot;)!=NULL)  </span><br><span class="line">    &#123;  </span><br><span class="line">        *((BOOL*)lParam) = TRUE;  </span><br><span class="line">    &#125;  </span><br><span class="line">    return TRUE;  </span><br><span class="line">&#125; </span><br><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    BOOL ret = FALSE;  </span><br><span class="line">    EnumWindows(EnumWndProc, (LPARAM)&amp;ret);   </span><br><span class="line">    return ret;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>GetForegroundWindow获取一个前台窗口的句柄。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    char fore_window[1024];  </span><br><span class="line">    GetWindowTextA(GetForegroundWindow(), fore_window, 1023);  </span><br><span class="line">    if (strstr(fore_window, &quot;WinDbg&quot;)!=NULL || strstr(fore_window, &quot;x64_dbg&quot;)!=NULL || strstr(fore_window, &quot;OllyICE&quot;)!=NULL || strstr(fore_window, &quot;OllyDBG&quot;)!=NULL || strstr(fore_window, &quot;Immunity&quot;)!=NULL)  </span><br><span class="line">    &#123;  </span><br><span class="line">        return TRUE;  </span><br><span class="line">    &#125;  </span><br><span class="line">    else  </span><br><span class="line">    &#123;  </span><br><span class="line">        return FALSE;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3查找进程信息"><a href="#3-3查找进程信息" class="headerlink" title="3.3查找进程信息"></a>3.3查找进程信息</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    DWORD ID;  </span><br><span class="line">    DWORD ret = 0;  </span><br><span class="line">    PROCESSENTRY32 pe32;  </span><br><span class="line">    pe32.dwSize = sizeof(pe32);   </span><br><span class="line">    HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);   </span><br><span class="line">    if(hProcessSnap == INVALID_HANDLE_VALUE)   </span><br><span class="line">    &#123;   </span><br><span class="line">        return FALSE;   </span><br><span class="line">    &#125;  </span><br><span class="line">    BOOL bMore = Process32First(hProcessSnap, &amp;pe32);   </span><br><span class="line">    while(bMore)  </span><br><span class="line">    &#123;  </span><br><span class="line">        if (stricmp(pe32.szExeFile, &quot;OllyDBG.EXE&quot;)==0 || stricmp(pe32.szExeFile, &quot;OllyICE.exe&quot;)==0 || stricmp(pe32.szExeFile, &quot;x64_dbg.exe&quot;)==0 || stricmp(pe32.szExeFile, &quot;windbg.exe&quot;)==0 || stricmp(pe32.szExeFile, &quot;ImmunityDebugger.exe&quot;)==0)  </span><br><span class="line">        &#123;  </span><br><span class="line">            return TRUE;  </span><br><span class="line">        &#125;  </span><br><span class="line">        bMore = Process32Next(hProcessSnap, &amp;pe32);   </span><br><span class="line">    &#125;  </span><br><span class="line">    CloseHandle(hProcessSnap);   </span><br><span class="line">    return FALSE;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、识别调试器行为"><a href="#二、识别调试器行为" class="headerlink" title="二、识别调试器行为"></a>二、识别调试器行为</h2><p>在逆向工程中，为了帮助恶意代码分析人员进行分析，可以使用调试器设置一个断点，或是单步执行一个进程。然而，在调试器中执行这些操作时，它们会修改进程中的代码。因此，恶意代码常使用几种反调试技术探测软件/硬件断点、完整性校验、时钟检测等几种类型的调试器行为。直接运行恶意代码与在调试器中运行恶意代码也会在一些细节上不同，如父进程信息、STARTUPINFO信息、SeDebugPrivilege权限等。</p>
+<h3 id="1-软件断点检查"><a href="#1-软件断点检查" class="headerlink" title="1.软件断点检查"></a>1.软件断点检查</h3><p>调试器设置断点的基本机制是用软件中断指令INT 3临时替换运行程序中的一条指令，然后当程序运行到这条指令时，调用调试异常处理例程。INT 3指令的机器码是0xCC，因此无论何时，使用调试器设置一个断点，它都会插入一个0xCC来修改代码。恶意代码常用的一种反调试技术是在它的代码中查找机器码0xCC，来扫描调试器对它代码的INT 3修改。repne scasb指令用于在一段数据缓冲区中搜索一个字节。EDI需指向缓冲区地址，AL则包含要找的字节，ECX设为缓冲区的长度。当ECX=0或找到该字节时，比较停止。<br>底下这个例子并不是很准却的检查，以为很可能原始软件存在CC的编码，导致误报，对于这个问题，可以先扫描，保存其断点，然后，第二次再次扫描，与之对比，进行检查。<br>代码如下，当然最好开线程跑，演示可以边调试边跑，随便打个断点，测试，然后自己加工一下代码就可以了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug14()</span><br><span class="line">&#123;</span><br><span class="line">	int CCAry[100] = &#123; 0 &#125;;</span><br><span class="line">	int addr = 0;</span><br><span class="line">	PIMAGE_DOS_HEADER pDosHeader;</span><br><span class="line">	PIMAGE_NT_HEADERS32 pNtHeaders;</span><br><span class="line">	PIMAGE_SECTION_HEADER pSectionHeader;</span><br><span class="line">	DWORD dwBaseImage = (DWORD)GetModuleHandle(NULL);</span><br><span class="line">	pDosHeader = (PIMAGE_DOS_HEADER)dwBaseImage;</span><br><span class="line">	pNtHeaders = (PIMAGE_NT_HEADERS32)((DWORD)pDosHeader + pDosHeader-&gt;e_lfanew);</span><br><span class="line">	pSectionHeader = (PIMAGE_SECTION_HEADER)((DWORD)pNtHeaders + sizeof(pNtHeaders-&gt;Signature) + sizeof(IMAGE_FILE_HEADER) +</span><br><span class="line">		(WORD)pNtHeaders-&gt;FileHeader.SizeOfOptionalHeader);</span><br><span class="line">	DWORD dwAddr = pSectionHeader-&gt;VirtualAddress + dwBaseImage;</span><br><span class="line">	DWORD dwCodeSize = pSectionHeader-&gt;SizeOfRawData;</span><br><span class="line">	BOOL Found = FALSE;</span><br><span class="line">	//原始代码中的CC</span><br><span class="line">	__asm</span><br><span class="line">	&#123;</span><br><span class="line">		cld</span><br><span class="line">		lea		ebx, CCAry</span><br><span class="line">		mov     edx, 0</span><br><span class="line">		mov     edi, dwAddr</span><br><span class="line">		mov     ecx, dwCodeSize</span><br><span class="line">		mov     al, 0CBH</span><br><span class="line">		xor		al,7</span><br><span class="line">		MYLOOP:</span><br><span class="line">		and     ecx,ecx</span><br><span class="line">		jz      OVER</span><br><span class="line">		repne   scasb</span><br><span class="line">		mov     [ebx],edi</span><br><span class="line">		add     ebx,4</span><br><span class="line">		jmp     MYLOOP</span><br><span class="line">		</span><br><span class="line">		mov addr, edi</span><br><span class="line">		OVER :</span><br><span class="line">	&#125;</span><br><span class="line">	//for (size_t i = 0; i &lt; 100; i++)</span><br><span class="line">	//&#123;</span><br><span class="line">	//	printf(&quot;%08x	&quot;, CCAry[i]);</span><br><span class="line">	//&#125;</span><br><span class="line">	//检测CC</span><br><span class="line">	while (!Found)</span><br><span class="line">	&#123;</span><br><span class="line">		Sleep(1000);</span><br><span class="line">		__asm</span><br><span class="line">		&#123;</span><br><span class="line">			cld</span><br><span class="line">			mov     ecx, dwCodeSize</span><br><span class="line">			mov     edi, dwAddr</span><br><span class="line">			MYLOOP2:</span><br><span class="line">			mov     al, 0CCH</span><br><span class="line">			and ecx,ecx</span><br><span class="line">			jz  NOTFOUND</span><br><span class="line">			repne   scasb</span><br><span class="line">			push ecx</span><br><span class="line">			push edi</span><br><span class="line">			mov eax, edi</span><br><span class="line">			lea edi, CCAry</span><br><span class="line">			mov ecx,100</span><br><span class="line">			repne scasd</span><br><span class="line">			pop edi</span><br><span class="line">			pop ecx</span><br><span class="line">			jz     MYLOOP2</span><br><span class="line">			mov Found, 1</span><br><span class="line">            NOTFOUND:</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return Found;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-硬件断点检查"><a href="#2-硬件断点检查" class="headerlink" title="2.硬件断点检查"></a>2.硬件断点检查</h3><p>在OllyDbg的寄存器窗口按下右键，点击View debug registers可以看到DR0、DR1、DR2、DR3、DR6和DR7这几个寄存器。DR0、Dr1、Dr2、Dr3用于设置硬件断点，由于只有4个硬件断点寄存器，所以同时最多只能设置4个硬件断点。DR4、DR5由系统保留。  DR6、DR7用于记录Dr0-Dr3中断点的相关属性。如果没有硬件断点，那么DR0、DR1、DR2、DR3这4个寄存器的值都为0。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    CONTEXT context;    </span><br><span class="line">    HANDLE hThread = GetCurrentThread();    </span><br><span class="line">    context.ContextFlags = CONTEXT_DEBUG_REGISTERS;    </span><br><span class="line">    GetThreadContext(hThread, &amp;context);    </span><br><span class="line">    if (context.Dr0 != 0 || context.Dr1 != 0 || context.Dr2 != 0 || context.Dr3!=0)     </span><br><span class="line">    &#123;    </span><br><span class="line">        return TRUE;    </span><br><span class="line">    &#125;    </span><br><span class="line">    return FALSE;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-执行代码校验和检查"><a href="#3-执行代码校验和检查" class="headerlink" title="3.执行代码校验和检查"></a>3.执行代码校验和检查</h3><p>恶意代码可以计算代码段的校验并实现与扫描中断相同的目的。与扫描0xCC不同，这种检查仅执行恶意代码中机器码CRC或者MD5校验和检查。<br>一般操作<br>首先读取文件代码段或者之前的一个内存校验值，计算一个原始校验值，然后读取映射后的代码，计算校验值，然后二者对比</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">//获取内存</span><br><span class="line">PIMAGE_DOS_HEADER pDosHeader;</span><br><span class="line">PIMAGE_NT_HEADERS32 pNtHeaders;</span><br><span class="line">PIMAGE_SECTION_HEADER pSectionHeader;</span><br><span class="line">DWORD dwBaseImage = (DWORD)GetModuleHandle(NULL);</span><br><span class="line">pDosHeader = (PIMAGE_DOS_HEADER)dwBaseImage;</span><br><span class="line">pNtHeaders = (PIMAGE_NT_HEADERS32)((DWORD)pDosHeader + pDosHeader-&gt;e_lfanew);</span><br><span class="line">pSectionHeader = (PIMAGE_SECTION_HEADER)((DWORD)pNtHeaders + sizeof(pNtHeaders-&gt;Signature) + sizeof(IMAGE_FILE_HEADER) +</span><br><span class="line">	(WORD)pNtHeaders-&gt;FileHeader.SizeOfOptionalHeader);</span><br><span class="line">DWORD dwAddr = pSectionHeader-&gt;VirtualAddress + dwBaseImage;</span><br><span class="line">DWORD dwCodeSize = pSectionHeader-&gt;SizeOfRawData;</span><br><span class="line">DWORD checksum = 0;</span><br><span class="line"></span><br><span class="line">__asm</span><br><span class="line">&#123;</span><br><span class="line">	cld</span><br><span class="line">	mov     esi, dwAddr</span><br><span class="line">	mov     ecx, dwCodeSize</span><br><span class="line">	xor eax, eax</span><br><span class="line">	checksum_loop :</span><br><span class="line">	movzx    ebx, byte ptr[esi]</span><br><span class="line">		add        eax, ebx</span><br><span class="line">		rol eax, 1</span><br><span class="line">		inc esi</span><br><span class="line">		loop       checksum_loop</span><br><span class="line">		mov checksum, eax</span><br><span class="line">&#125;</span><br><span class="line">//文件计算出来的原始的值,或者之前的内存值</span><br><span class="line">if (checksum != 12345)</span><br><span class="line">&#123;</span><br><span class="line">	return FALSE;</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">	return TRUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-时钟检测"><a href="#4-时钟检测" class="headerlink" title="4.时钟检测"></a>4.时钟检测</h3><p>被调试时，进程的运行速度大大降低，例如，单步调试大幅降低恶意代码的运行速度，所以时钟检测是恶意代码探测调试器存在的最常用方式之一。有如下两种用时钟检测来探测调试器存在的方法。<br>记录一段操作前后的时间戳，然后比较这两个时间戳，如果存在滞后，则可以认为存在调试器。<br>记录触发一个异常前后的时间戳。如果不调试进程，可以很快处理完异常，因为调试器处理异常的速度非常慢。默认情况下，调试器处理异常时需要人为干预，这导致大量延迟。虽然很多调试器允许我们忽略异常，将异常直接返回程序，但这样操作仍然存在不小的延迟。</p>
+<h4 id="4-1使用rdtsc指令"><a href="#4-1使用rdtsc指令" class="headerlink" title="4.1使用rdtsc指令"></a>4.1使用rdtsc指令</h4><p>较常用的时钟检测方法是利用rdtsc指令(操作码0x0F31)，它返回至系统重新启动以来的时钟数，并且将其作为一个64位的值存入EDX:EAX中。恶意代码运行两次rdtsc指令，然后比较两次读取之间的差值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    DWORD time1, time2;  </span><br><span class="line">    __asm  </span><br><span class="line">    &#123;  </span><br><span class="line">        rdtsc  </span><br><span class="line">        mov time1, eax  </span><br><span class="line">        rdtsc  </span><br><span class="line">        mov time2, eax  </span><br><span class="line">    &#125;  </span><br><span class="line">    if (time2 - time1 &lt; 0xff)  </span><br><span class="line">    &#123;  </span><br><span class="line">        return FALSE;  </span><br><span class="line">    &#125;  </span><br><span class="line">    else  </span><br><span class="line">    &#123;  </span><br><span class="line">        return TRUE;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2使用QueryPerformanceCounter和GetTickCount"><a href="#4-2使用QueryPerformanceCounter和GetTickCount" class="headerlink" title="4.2使用QueryPerformanceCounter和GetTickCount"></a>4.2使用QueryPerformanceCounter和GetTickCount</h4><p>同rdtsc指令一样，这两个Windows API函数也被用来执行一个反调试的时钟检测。使用这种方法的前提是处理器有高分辨率能力的计数器-寄存器，它能存储处理器活跃的时钟数。为了获取比较的时间差，调用两次QueryPerformanceCounter函数查询这个计数器。若两次调用之间花费的时间过于长，则可以认为正在使用调试器。GetTickCount函数返回最近系统重启时间与当前时间的相差毫秒数(由于时钟计数器的大小原因，计数器每49.7天就被重置一次)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    DWORD time1 = GetTickCount();  </span><br><span class="line">    __asm  </span><br><span class="line">    &#123;  </span><br><span class="line">        mov     ecx,10             </span><br><span class="line">        mov     edx,6                 </span><br><span class="line">        mov     ecx,10  </span><br><span class="line">    &#125;  </span><br><span class="line">    DWORD time2 = GetTickCount();  </span><br><span class="line">    if (time2-time1 &gt; 0x1A)  </span><br><span class="line">    &#123;  </span><br><span class="line">        return TRUE;  </span><br><span class="line">    &#125;  </span><br><span class="line">    else  </span><br><span class="line">    &#123;  </span><br><span class="line">        return FALSE;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-判断父进程是否是explorer-exe"><a href="#5-判断父进程是否是explorer-exe" class="headerlink" title="5.判断父进程是否是explorer.exe"></a>5.判断父进程是否是explorer.exe</h3><p>一般双击运行的进程的父进程都是explorer.exe，但是如果进程被调试父进程则是调试器进程。也就是说如果父进程不是explorer.exe则可以认为程序正在被调试<br>后边说的NtQueryInformationProcess这个方法，在VS下Debug进行调试，是可以检测，且这个结构成立，但是在非调试状态，这个结构好像并不能检查</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">typedef struct</span><br><span class="line">&#123;</span><br><span class="line">	DWORD ExitStatus;	// 接收进程终止状态</span><br><span class="line">	DWORD PebBaseAddress;	// 接收进程环境块地址</span><br><span class="line">	DWORD AffinityMask;	// 接收进程关联掩码</span><br><span class="line">	DWORD BasePriority;	// 接收进程的优先级类</span><br><span class="line">	ULONG UniqueProcessId;	// 接收进程ID</span><br><span class="line">	ULONG InheritedFromUniqueProcessId; // 接收父进程ID</span><br><span class="line">&#125; PROCESS_BASIC_INFORMATION;</span><br></pre></td></tr></table></figure>
+
+<p>所以想了想，把代码贴上,有错误请指教</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">//个人测试，代码行不通</span><br><span class="line">typedef struct</span><br><span class="line">&#123;</span><br><span class="line">	DWORD ExitStatus;	// 接收进程终止状态</span><br><span class="line">	DWORD PebBaseAddress;	// 接收进程环境块地址</span><br><span class="line">	DWORD AffinityMask;	// 接收进程关联掩码</span><br><span class="line">	DWORD BasePriority;	// 接收进程的优先级类</span><br><span class="line">	ULONG UniqueProcessId;	// 接收进程ID</span><br><span class="line">	ULONG InheritedFromUniqueProcessId; // 接收父进程ID</span><br><span class="line">&#125; PROCESS_BASIC_INFORMATION;</span><br><span class="line">BOOL CheckDebug17()</span><br><span class="line">&#123;</span><br><span class="line">	LONG                      status;</span><br><span class="line">	DWORD                     dwParentPID = 0;</span><br><span class="line">	HANDLE                    hProcess;</span><br><span class="line">	PROCESS_BASIC_INFORMATION pbi;</span><br><span class="line">	int pid = GetCurrentProcessId();</span><br><span class="line">	hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pid);</span><br><span class="line">	if (!hProcess)</span><br><span class="line">		return -1;</span><br><span class="line">	NtQueryInformationProcessPtr  NtQueryInformationProcess = (NtQueryInformationProcessPtr)GetProcAddress(GetModuleHandleA(&quot;ntdll&quot;), &quot;NtQueryInformationProcess&quot;);</span><br><span class="line">	status = NtQueryInformationProcess(hProcess, 0, (PVOID)&amp;pbi, sizeof(PROCESS_BASIC_INFORMATION), NULL);</span><br><span class="line">	PROCESSENTRY32 pe32;</span><br><span class="line">	pe32.dwSize = sizeof(pe32);</span><br><span class="line">	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);</span><br><span class="line">	if (hProcessSnap == INVALID_HANDLE_VALUE)</span><br><span class="line">	&#123;</span><br><span class="line">		return FALSE;</span><br><span class="line">	&#125;</span><br><span class="line">	printf(&quot;%d %d\r\n&quot;, pid, pbi.InheritedFromUniqueProcessId);</span><br><span class="line">	BOOL bMore = Process32First(hProcessSnap, &amp;pe32);</span><br><span class="line">	while (bMore)</span><br><span class="line">	&#123;</span><br><span class="line">		if (pbi.InheritedFromUniqueProcessId == pe32.th32ProcessID)</span><br><span class="line">		&#123;</span><br><span class="line">			printf(&quot;%d %d %s\r\n&quot;, pbi.InheritedFromUniqueProcessId, pe32.th32ProcessID, pe32.szExeFile);</span><br><span class="line">			if (stricmp(pe32.szExeFile, &quot;explorer.exe&quot;) == 0)</span><br><span class="line">			&#123;</span><br><span class="line">				CloseHandle(hProcessSnap);</span><br><span class="line">				return FALSE;</span><br><span class="line">			&#125;</span><br><span class="line">			else</span><br><span class="line">			&#123;</span><br><span class="line">				CloseHandle(hProcessSnap);</span><br><span class="line">				return TRUE;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		bMore = Process32Next(hProcessSnap, &amp;pe32);</span><br><span class="line">	&#125;</span><br><span class="line">	CloseHandle(hProcessSnap);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>利用其他方法检查</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">// Search each process in the snapshot for id. </span><br><span class="line">BOOL FindProcessID(HANDLE snap, DWORD id, LPPROCESSENTRY32 ppe)</span><br><span class="line">&#123;</span><br><span class="line">	BOOL fOk;</span><br><span class="line">	ppe-&gt;dwSize = sizeof(PROCESSENTRY32);</span><br><span class="line">	for (fOk = Process32First(snap, ppe); fOk; fOk = Process32Next(snap, ppe))</span><br><span class="line">		if (ppe-&gt;th32ProcessID == id)</span><br><span class="line">			break;</span><br><span class="line">	return fOk;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Obtain the process and thread identifiers of the parent process. </span><br><span class="line">BOOL CheckDebug18()</span><br><span class="line">&#123;</span><br><span class="line">	HANDLE hSnap;</span><br><span class="line">	PROCESSENTRY32 pe;</span><br><span class="line">	DWORD id = GetCurrentProcessId();</span><br><span class="line">	BOOL fOk;</span><br><span class="line">	//获取系统所有进程和线程</span><br><span class="line">	hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS | TH32CS_SNAPTHREAD, id);</span><br><span class="line"></span><br><span class="line">	if (hSnap == INVALID_HANDLE_VALUE)</span><br><span class="line">		return FALSE;</span><br><span class="line">	//获取父进程PID</span><br><span class="line">	FindProcessID(hSnap, id, &amp;pe);</span><br><span class="line">	//检查父进程是否存在</span><br><span class="line">	if (!FindProcessID(hSnap, pe.th32ParentProcessID, &amp;pe))</span><br><span class="line">	&#123;</span><br><span class="line">		CloseHandle(hSnap);</span><br><span class="line">		return FALSE;</span><br><span class="line">	&#125;</span><br><span class="line">	//printf(&quot;%s&quot;, pe.szExeFile);</span><br><span class="line">	if (strcmp(pe.szExeFile,&quot;explorer.exe&quot;))</span><br><span class="line">	&#123;</span><br><span class="line">		return TRUE;</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		return FALSE;</span><br><span class="line">	&#125;</span><br><span class="line">	return fOk;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-判断STARTUPINFO信息"><a href="#6-判断STARTUPINFO信息" class="headerlink" title="6.判断STARTUPINFO信息"></a>6.判断STARTUPINFO信息</h3><p>explorer.exe创建进程的时候会把STARTUPINFO结构中的值设为0，而非explorer.exe创建进程的时候会忽略这个结构中的值，也就是结构中的值不为0。所以可以利用STARTUPINFO来判断程序是否在被调试。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    STARTUPINFO si;  </span><br><span class="line">    GetStartupInfo(&amp;si);  </span><br><span class="line">    if (si.dwX!=0 || si.dwY!=0 || si.dwFillAttribute!=0 || si.dwXSize!=0 || si.dwYSize!=0 || si.dwXCountChars!=0 || si.dwYCountChars!=0)  </span><br><span class="line">    &#123;  </span><br><span class="line">        return TRUE;  </span><br><span class="line">    &#125;  </span><br><span class="line">    else  </span><br><span class="line">    &#123;  </span><br><span class="line">        return FALSE;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-判断是否具有SeDebugPrivilege权限"><a href="#7-判断是否具有SeDebugPrivilege权限" class="headerlink" title="7.判断是否具有SeDebugPrivilege权限"></a>7.判断是否具有SeDebugPrivilege权限</h3><p>默认情况下进程是没有SeDebugPrivilege权限的，但是当进程通过调试器启动时，由于调试器本身启动了SeDebugPrivilege权限，当调试进程被加载时SeDebugPrivilege也就被继承了。所以我们可以检测进程的SeDebugPrivilege权限来间接判断是否存在调试器，而对SeDebugPrivilege权限的判断可以用能否打开csrss.exe进程来判断。（WIN7 有效，似乎WIN 10不能随便打开CSRSS了，可以挑一个其他的。）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    DWORD ID;  </span><br><span class="line">    DWORD ret = 0;  </span><br><span class="line">    PROCESSENTRY32 pe32;  </span><br><span class="line">    pe32.dwSize = sizeof(pe32);   </span><br><span class="line">    HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);   </span><br><span class="line">    if(hProcessSnap == INVALID_HANDLE_VALUE)   </span><br><span class="line">    &#123;   </span><br><span class="line">        return FALSE;   </span><br><span class="line">    &#125;  </span><br><span class="line">    BOOL bMore = Process32First(hProcessSnap, &amp;pe32);   </span><br><span class="line">    while(bMore)  </span><br><span class="line">    &#123;  </span><br><span class="line">        if (strcmp(pe32.szExeFile, &quot;csrss.exe&quot;)==0)  </span><br><span class="line">        &#123;  </span><br><span class="line">            ID = pe32.th32ProcessID;  </span><br><span class="line">            break;  </span><br><span class="line">        &#125;  </span><br><span class="line">        bMore = Process32Next(hProcessSnap, &amp;pe32);   </span><br><span class="line">    &#125;  </span><br><span class="line">    CloseHandle(hProcessSnap);   </span><br><span class="line">    if (OpenProcess(PROCESS_QUERY_INFORMATION, NULL, ID) != NULL)  </span><br><span class="line">    &#123;  </span><br><span class="line">        return TRUE;  </span><br><span class="line">    &#125;  </span><br><span class="line">    else  </span><br><span class="line">    &#123;  </span><br><span class="line">        return FALSE;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、干扰调试器的功能"><a href="#三、干扰调试器的功能" class="headerlink" title="三、干扰调试器的功能"></a>三、干扰调试器的功能</h2><p>恶意代码可以用一些技术来干扰调试器的正常运行。例如线程本地存储(TLS)回调、插入中断、异常等。这些技术当且仅当程序处于调试器控制之下时才试图扰乱程序的运行。</p>
+<h3 id="1-使用TLS回调"><a href="#1-使用TLS回调" class="headerlink" title="1.使用TLS回调"></a>1.使用TLS回调</h3><p>Thread Local Storage(TLS)，即线程本地存储，是Windows为解决一个进程中多个线程同时访问全局变量而提供的机制。TLS可以简单地由操作系统代为完成整个互斥过程，也可以由用户自己编写控制信号量的函数。当进程中的线程访问预先制定的内存空间时，操作系统会调用系统默认的或用户自定义的信号量函数，保证数据的完整性与正确性。下面是一个简单的TLS回调的例子，TLS_CALLBACK1函数在main函数执行前调用IsDebuggerPresent函数检查它是否正在被调试。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;  </span><br><span class="line">#include &lt;windows.h&gt;  </span><br><span class="line"></span><br><span class="line">void NTAPI __stdcall TLS_CALLBACK1(PVOID DllHandle, DWORD dwReason, PVOID Reserved);</span><br><span class="line"></span><br><span class="line">#ifdef _M_IX86  </span><br><span class="line">#pragma comment (linker, &quot;/INCLUDE:__tls_used&quot;)  </span><br><span class="line">#pragma comment (linker, &quot;/INCLUDE:__tls_callback&quot;)  </span><br><span class="line">#else  </span><br><span class="line">#pragma comment (linker, &quot;/INCLUDE:_tls_used&quot;)  </span><br><span class="line">#pragma comment (linker, &quot;/INCLUDE:_tls_callback&quot;)  </span><br><span class="line">#endif  </span><br><span class="line">EXTERN_C</span><br><span class="line">#ifdef _M_X64  </span><br><span class="line">#pragma const_seg (&quot;.CRT$XLB&quot;)  </span><br><span class="line">const</span><br><span class="line">#else  </span><br><span class="line">#pragma data_seg (&quot;.CRT$XLB&quot;)  </span><br><span class="line">#endif  </span><br><span class="line"></span><br><span class="line">PIMAGE_TLS_CALLBACK _tls_callback[] = &#123; TLS_CALLBACK1,0 &#125;;</span><br><span class="line">#pragma data_seg ()  </span><br><span class="line">#pragma const_seg ()  </span><br><span class="line"></span><br><span class="line">#include &lt;iostream&gt;  </span><br><span class="line"></span><br><span class="line">void NTAPI __stdcall TLS_CALLBACK1(PVOID DllHandle, DWORD Reason, PVOID Reserved)</span><br><span class="line">&#123;</span><br><span class="line">	if (IsDebuggerPresent())</span><br><span class="line">	&#123;</span><br><span class="line">		printf(&quot;TLS_CALLBACK: Debugger Detected!\n&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		printf(&quot;TLS_CALLBACK: No Debugger Present!\n&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;233\n&quot;);</span><br><span class="line">	system(&quot;pause&quot;);</span><br><span class="line"></span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>要在程序中使用TLS，必须为TLS数据单独建一个数据段，用相关数据填充此段，并通知链接器为TLS数据在PE文件头中添加数据。_tls_callback[]数组中保存了所有的TLS回调函数指针。数组必须以NULL指针结束，且数组中的每一个回调函数在程序初始化时都会被调用，程序员可按需要添加。但程序员不应当假设操作系统已何种顺序调用回调函数。如此则要求在TLS回调函数中进行反调试操作需要一定的独立性。<br>正常运行这个程序会打印下面的内容。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">TLS_CALLBACK: No Debugger Present!</span><br><span class="line">233</span><br><span class="line">//如果把在OllyDbg中运行，在OllyDbg暂停之前会打印下面的内容。</span><br><span class="line">TLS_CALLBACK: Debugger Detected!</span><br></pre></td></tr></table></figure>
+
+<p>使用PEview查看.tls段，可以发现TLS回调函数。通常情况下，正常程序不使用.tls段，如果在可执行程序中看到.tls段，应该立即怀疑它使用了反调试技术。<br>了解原理<br>在OllyDbg中选择Options-&gt;Debugging Options-&gt;Events，然后设置System break-point作为第一个暂停的位置，这样就可以让OllyDbg在TLS回调执行前暂停。<br><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAMAAABOo35HAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC9UExURVlZWdPT07KysmRkZIWFhfT09JmZmWZmZm9vb39/fxkZGUxMTDMzM3p6epCQkKamppubm729venp6cjIyN7e3tbW1s/Pz8LCwnx8fLS0tFZWVoiIiI+Pj6GhoeTk5Glpabu7u93d3evr66CgoJSUlKqqqsnJyeDg4Hd3d8PDw+Xl5bi4uNHR0dvb26Ojo6urq+fn51hYWDg4OCgoKHBwcK2traenp0FBQe7u7vHx8U5OTre3t8zMzHV1df///7GrnpQAAAA/dFJOU///////////////////////////////////////////////////////////////////////////////////AI4mfBcAAAUGSURBVHja7NoJb6M4GMZxY0NCD64kve/pMZ2d3Z297+X7f6zFNmBAMUXa6URl/q9UJSWPUPzrizFWRUlNLgEBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYYIEFAVhggQUWWGBBABZYYIEFFlgQgAUWWGCBBRYEYIEFFlhggQUBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYn6cCIcRXgvX/h9qcIVBqDdbEM8RCxGCB9QqXYRwHYDHBgwXWl8eKZKiESHI3Ba1kWs3fKixcaJUl1YyeBm7Ocq+yLItUiVBGnXxenSHJolIKEcwHq6ikbOX1YGVzQCTN8LPmSLreghUl9sN4Uw7yajMrLC0TZ1ImzqY6FEop0+pIaEN5HaoOxVuwEqFyc4I46uSlzOLqgxlh6UaR9l3VYWl9Fdoxb1Q90KJtu41pwwFW/WHhTtW8i7TafLCqRsk6bsGw63L9qurXRmuIlbT9lDQnlXU+nBFW1Q2qnZbDprWa2tjR90LZFqx1/+Td/HpGWLlrLDvIwTcx6dQ1Vrntbig68cDms3JwbA5Y1azs1ger6sNV/bbIw1jU81MvNAGrl58RVn8ozW+btF08iGFoAlYvP3csfVur1gJBEIA1uBmue5dhZDOyO2epbmgCVi8/I6x0MMHH9pjsTfBhNzQBq5uPZoQlB0uH3DZG4EZqQ26fL3sZq5uf09Ih6qw3i/pm6BZO0qZX7rrUS68Xsbr5ZE4rePMk08pk9aUZugfqppvs6AM1Acvlo/StP+6EbW06z8hJqxbYp2BZPQUnFsLsKuhQdaHqn5ewbF7KXIn0jWO5MqOQ7RaNLPtbNMmmhimj0GUmYLl8Gs0Lq4wyPbTu1l2QKqHSouzs3OlDIslW5SQsnY/NXmFplyNvEuuLV/Tau9BzwiraDUSwXmysztYWWNtL1psXeumgIrDGaqXvBfUuvtqUYI3V2t1wk1e2msFluJJm6zDJXv/fIfjPP7DAAgsssCiwwAILLLDAosACCyywwAKLAgsssMACC6zt9fDz/v75tyOB+98PD2+ORgKffjw4OP1uJPDxl+Xy8v1I4MPF3t7VNyOB4/vF4uzdzrG+39f1kz/w66Guv/yBvw90KX/gZKkr8Qf+2dOV+gNHC12/7RxrabD2/a31bLAO/a11YbAO/K21MFhLf2s9Gqw9f2vdGqzFu11jnVusE2/gxmI9eQOnFuvYG7i0WH7uK4t15w2cWazrXWP9a7H8f/bQYvm/6IPF+sF/pVssf19Ii/WH/0K2WH/uGuvEWC39gSdj9Twy+Rqri5EZx1gt/IE7Y/XoD1wbq9vd3w1PlufnD2OBp+ebm/uxwPHF6emnscDR4vLy41jg7vHq6sNY4Pr27OyYdRaLUrDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssL6u+k+AAQCR9eHtLKvLfwAAAABJRU5ErkJggg==" data-original="./1569567484035.png" alt="Alt text"><br>IDA查看<br>按Ctrl+E快捷键看到二进制的入口点，该组合键的作用是显示应用程序所有的入口点，其中包括TLS回调。双击函数名可以浏览回调函数<br><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAMAAABOo35HAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC9UExURVlZWdPT07KysmRkZIWFhfT09JmZmWZmZm9vb39/fxkZGUxMTDMzM3p6epCQkKamppubm729venp6cjIyN7e3tbW1s/Pz8LCwnx8fLS0tFZWVoiIiI+Pj6GhoeTk5Glpabu7u93d3evr66CgoJSUlKqqqsnJyeDg4Hd3d8PDw+Xl5bi4uNHR0dvb26Ojo6urq+fn51hYWDg4OCgoKHBwcK2traenp0FBQe7u7vHx8U5OTre3t8zMzHV1df///7GrnpQAAAA/dFJOU///////////////////////////////////////////////////////////////////////////////////AI4mfBcAAAUGSURBVHja7NoJb6M4GMZxY0NCD64kve/pMZ2d3Z297+X7f6zFNmBAMUXa6URl/q9UJSWPUPzrizFWRUlNLgEBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYYIEFAVhggQUWWGBBABZYYIEFFlgQgAUWWGCBBRYEYIEFFlhggQUBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYn6cCIcRXgvX/h9qcIVBqDdbEM8RCxGCB9QqXYRwHYDHBgwXWl8eKZKiESHI3Ba1kWs3fKixcaJUl1YyeBm7Ocq+yLItUiVBGnXxenSHJolIKEcwHq6ikbOX1YGVzQCTN8LPmSLreghUl9sN4Uw7yajMrLC0TZ1ImzqY6FEop0+pIaEN5HaoOxVuwEqFyc4I46uSlzOLqgxlh6UaR9l3VYWl9Fdoxb1Q90KJtu41pwwFW/WHhTtW8i7TafLCqRsk6bsGw63L9qurXRmuIlbT9lDQnlXU+nBFW1Q2qnZbDprWa2tjR90LZFqx1/+Td/HpGWLlrLDvIwTcx6dQ1Vrntbig68cDms3JwbA5Y1azs1ger6sNV/bbIw1jU81MvNAGrl58RVn8ozW+btF08iGFoAlYvP3csfVur1gJBEIA1uBmue5dhZDOyO2epbmgCVi8/I6x0MMHH9pjsTfBhNzQBq5uPZoQlB0uH3DZG4EZqQ26fL3sZq5uf09Ih6qw3i/pm6BZO0qZX7rrUS68Xsbr5ZE4rePMk08pk9aUZugfqppvs6AM1Acvlo/StP+6EbW06z8hJqxbYp2BZPQUnFsLsKuhQdaHqn5ewbF7KXIn0jWO5MqOQ7RaNLPtbNMmmhimj0GUmYLl8Gs0Lq4wyPbTu1l2QKqHSouzs3OlDIslW5SQsnY/NXmFplyNvEuuLV/Tau9BzwiraDUSwXmysztYWWNtL1psXeumgIrDGaqXvBfUuvtqUYI3V2t1wk1e2msFluJJm6zDJXv/fIfjPP7DAAgsssCiwwAILLLDAosACCyywwAKLAgsssMACC6zt9fDz/v75tyOB+98PD2+ORgKffjw4OP1uJPDxl+Xy8v1I4MPF3t7VNyOB4/vF4uzdzrG+39f1kz/w66Guv/yBvw90KX/gZKkr8Qf+2dOV+gNHC12/7RxrabD2/a31bLAO/a11YbAO/K21MFhLf2s9Gqw9f2vdGqzFu11jnVusE2/gxmI9eQOnFuvYG7i0WH7uK4t15w2cWazrXWP9a7H8f/bQYvm/6IPF+sF/pVssf19Ii/WH/0K2WH/uGuvEWC39gSdj9Twy+Rqri5EZx1gt/IE7Y/XoD1wbq9vd3w1PlufnD2OBp+ebm/uxwPHF6emnscDR4vLy41jg7vHq6sNY4Pr27OyYdRaLUrDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssL6u+k+AAQCR9eHtLKvLfwAAAABJRU5ErkJggg==" data-original="./1569567596183.png" alt="Alt text"><br>由于TLS回调已广为人知，因此同过去相比，恶意代码使用它的次数已经明显减少。为数不多的合法程序使用TLS回调，所以可执行程序中的.tls段特别突出。</p>
+<h3 id="2-利用中断"><a href="#2-利用中断" class="headerlink" title="2.利用中断"></a>2.利用中断</h3><h4 id="int-3"><a href="#int-3" class="headerlink" title="int 3"></a>int 3</h4><p>因为调试器使用INT 3来设置软件断点，所以一种反调试技术就是在合法代码段中插入0xCC(INT 3)欺骗调试器，使其认为这些0xCC机器码是自己设置的断点。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">      __try  </span><br><span class="line">      &#123;  </span><br><span class="line">            __asm int 3  </span><br><span class="line">      &#125;  </span><br><span class="line">      __except(1)  </span><br><span class="line">      &#123;  </span><br><span class="line">            return FALSE;  </span><br><span class="line">      &#125;  </span><br><span class="line">      return TRUE;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="SEH（INT-3，这里简单说，后边涉及VEH，在拿出来单独看一下）"><a href="#SEH（INT-3，这里简单说，后边涉及VEH，在拿出来单独看一下）" class="headerlink" title="SEH（INT 3，这里简单说，后边涉及VEH，在拿出来单独看一下）"></a>SEH（INT 3，这里简单说，后边涉及VEH，在拿出来单独看一下）</h4><p>除了使用_try和_except以外还可以直接使用汇编代码安装SEH。在下面的代码中如果进程没有处于调试中，则正常终止；如果进程处于调试中，则跳转到非法地址0xFFFFFFFF处，无法继续调试。<br><strong>自己安装的一场大部分调试器会崩溃，包括吾爱的调试器</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">void CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">    printf(&quot;SEH : BreakPoint\n&quot;);  </span><br><span class="line">   </span><br><span class="line">    __asm &#123;  </span><br><span class="line">        // install SEH  </span><br><span class="line">        push handler  </span><br><span class="line">        push DWORD ptr fs:[0]  </span><br><span class="line">        mov DWORD ptr fs:[0], esp  </span><br><span class="line">           </span><br><span class="line">        // generating exception  </span><br><span class="line">        int 3  </span><br><span class="line">   </span><br><span class="line">        // 1) debugging  </span><br><span class="line">        //    go to terminating code  </span><br><span class="line">        mov eax, 0xFFFFFFFF  </span><br><span class="line">        jmp eax                 // process terminating!!!  </span><br><span class="line">   </span><br><span class="line">        // 2) not debugging  </span><br><span class="line">        //    go to normal code  </span><br><span class="line">handler:  </span><br><span class="line">        mov eax, dword ptr ss:[esp+0xc]  </span><br><span class="line">        mov ebx, normal_code  </span><br><span class="line">        mov dword ptr ds:[eax+0xb8], ebx  </span><br><span class="line">        xor eax, eax  </span><br><span class="line">        retn  </span><br><span class="line">   </span><br><span class="line">normal_code:  </span><br><span class="line">        //   remove SEH  </span><br><span class="line">        pop dword ptr fs:[0]  </span><br><span class="line">        add esp, 4  </span><br><span class="line">    &#125;  </span><br><span class="line">   </span><br><span class="line">    printf(&quot;  =&gt; Not debugging...\n\n&quot;);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="0xCD03"><a href="#0xCD03" class="headerlink" title="0xCD03"></a>0xCD03</h4><p>双字节操作码0xCD03也可以产生INT 3中断，这是恶意代码干扰WinDbg调试器的有效方法。在调试器外，0xCD03指令产生一个STATUS_BREAKPOINT异常。然而在WinDbg调试器内，由于断点通常是单字节机器码0xCC，因此WinDbg会捕获这个断点然后将EIP加1字节。这可能导致程序在被正常运行的WinDbg调试时，执行不同的指令集(OllyDbg可以避免双字节INT 3的攻击)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">      __try  </span><br><span class="line">      &#123;  </span><br><span class="line">            __asm  </span><br><span class="line">            &#123;  </span><br><span class="line">                  __emit 0xCD  </span><br><span class="line">                  __emit 0x03  </span><br><span class="line">            &#125;  </span><br><span class="line">      &#125;  </span><br><span class="line">      __except(1)  </span><br><span class="line">      &#123;  </span><br><span class="line">            return FALSE;  </span><br><span class="line">      &#125;  </span><br><span class="line">      return TRUE;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="int-2D"><a href="#int-2D" class="headerlink" title="int 2D"></a>int 2D</h4><p>INT 2D原为内核模式中用来触发断点异常的指令，也可以在用户模式下触发异常。但程序调试运行时不会触发异常，只是忽略。INT 2D指令在ollydbg中有两个有趣的特性。在调试模式中执行INT 2D指令，下一条指令的第一个字节将被忽略。使用StepInto(F7)或者StepOver(F8)命令跟踪INT 2D指令，程序不会停在下一条指令开始的地方，而是一直运行，就像RUN(F9)一样。在下面的代码中，程序调试运行时，执行INT 2D之后不会运行SEH，而是跳过NOP，把bDebugging标志设置为1，跳转到normal_code；程序正常运行时，执行INT 2D之后触发SEH，在异常处理器中设置EIP并把bDebugging标志设置为0。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug24()</span><br><span class="line">&#123;</span><br><span class="line">	BOOL bDebugging = FALSE;</span><br><span class="line"></span><br><span class="line">	__asm &#123;</span><br><span class="line">		// install SEH  </span><br><span class="line">		push handler</span><br><span class="line">		push DWORD ptr fs : [0]</span><br><span class="line">		mov DWORD ptr fs : [0], esp</span><br><span class="line"></span><br><span class="line">		int 0x2d</span><br><span class="line"></span><br><span class="line">		nop</span><br><span class="line">		mov bDebugging, 1</span><br><span class="line">		jmp normal_code</span><br><span class="line"></span><br><span class="line">		handler :</span><br><span class="line">		mov eax, dword ptr ss : [esp + 0xc]</span><br><span class="line">			mov dword ptr ds : [eax + 0xb8], offset normal_code</span><br><span class="line">			mov bDebugging, 0</span><br><span class="line">			xor eax, eax</span><br><span class="line">			retn</span><br><span class="line"></span><br><span class="line">			normal_code :</span><br><span class="line">		//   remove SEH  </span><br><span class="line">		pop dword ptr fs : [0]</span><br><span class="line">			add esp, 0xC</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	printf(&quot;Trap Flag (INT 2D)\n&quot;);</span><br><span class="line">	if (bDebugging)  return 1;</span><br><span class="line">	else              return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="0xF1"><a href="#0xF1" class="headerlink" title="0xF1"></a>0xF1</h4><p>片内仿真器(ICE)断点指令ICEBP(操作码0xF1)是Intel未公开的指令之一。由于使用ICE难以在任意位置设置断点，因此ICEBP指令被设计用来降低使用ICE设置断点的难度。运行ICEBP指令将会产生一个单步异常，如果通过单步调试跟踪程序，调试器会认为这是单步调试产生的异常，从而不执行先前设置的异常处理例程。利用这一点，恶意代码使用异常处理例程作为它的正常执行流程。为了防止这种反调试技术，执行ICEBP指令时不要使用单步。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">      __try  </span><br><span class="line">      &#123;  </span><br><span class="line">            __asm __emit 0xF1  </span><br><span class="line">      &#125;  </span><br><span class="line">      __except(1)  </span><br><span class="line">      &#123;  </span><br><span class="line">            return FALSE;  </span><br><span class="line">      &#125;  </span><br><span class="line">      return TRUE;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="堆栈段操作"><a href="#堆栈段操作" class="headerlink" title="堆栈段操作"></a>堆栈段操作</h4><p>在操作ss堆栈段寄存器时，调试器跳过指令跟踪。在下一个示例中，调试器将立即移到 xor edx, edx 指令，同时执行上一个指令,没什么用，其实跳过的编码还是执行了，就是跳了一下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">__asm</span><br><span class="line">&#123;</span><br><span class="line">    push ss</span><br><span class="line">    pop  ss</span><br><span class="line">    mov  eax, 0xC000C1EE // This line will be traced over by debugger</span><br><span class="line">    xor  edx, edx        // Debugger will step to this line</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-设置陷阱标志位（TF）"><a href="#3-设置陷阱标志位（TF）" class="headerlink" title="3.设置陷阱标志位（TF）"></a>3.设置陷阱标志位（TF）</h3><p>EFLAGS寄存器的第八个比特位是陷阱标志位。如果设置了，就会产生一个单步异常。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">      __try  </span><br><span class="line">      &#123;  </span><br><span class="line">            __asm  </span><br><span class="line">            &#123;  </span><br><span class="line">                  pushfd       </span><br><span class="line">                  or word ptr[esp], 0x100              </span><br><span class="line">                  popfd  </span><br><span class="line">                  nop          </span><br><span class="line">            &#125;  </span><br><span class="line">      &#125;  </span><br><span class="line">      __except(1)  </span><br><span class="line">      &#123;  </span><br><span class="line">            return FALSE;  </span><br><span class="line">      &#125;  </span><br><span class="line">      return TRUE;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用异常"><a href="#使用异常" class="headerlink" title="使用异常"></a>使用异常</h3><h4 id="4-1RaiseException"><a href="#4-1RaiseException" class="headerlink" title="4.1RaiseException"></a>4.1RaiseException</h4><p>RaiseException函数产生的若干不同类型的异常可以被调试器捕获。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">BOOL TestExceptionCode(DWORD dwCode)  </span><br><span class="line">&#123;  </span><br><span class="line">      __try  </span><br><span class="line">      &#123;  </span><br><span class="line">            RaiseException(dwCode, 0, 0, 0);  </span><br><span class="line">      &#125;  </span><br><span class="line">      __except(1)  </span><br><span class="line">      &#123;  </span><br><span class="line">            return FALSE;  </span><br><span class="line">      &#125;  </span><br><span class="line">      return TRUE;  </span><br><span class="line">&#125;  </span><br><span class="line">    </span><br><span class="line">BOOL CheckDebug()  </span><br><span class="line">&#123;  </span><br><span class="line">      return TestExceptionCode(DBG_RIPEXCEPTION);      </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2SetUnhandledExceptionFilter"><a href="#4-2SetUnhandledExceptionFilter" class="headerlink" title="4.2SetUnhandledExceptionFilter"></a>4.2SetUnhandledExceptionFilter</h4><p>进程中发生异常时若SEH未处理或注册的SEH不存在，会调用UnhandledExceptionFilter，它会运行系统最后的异常处理器。UnhandledExceptionFilter内部调用了前面提到过的NtQueryInformationProcess以判断是否正在调试进程。若进程正常运行，则运行最后的异常处理器；若进程处于调试，则将异常派送给调试器。SetUnhandledExceptionFilter函数可以修改系统最后的异常处理器。下面的代码先触发异常，然后在新注册的最后的异常处理器内部判断进程正常运行还是调试运行。进程正常运行时pExcept-&gt;ContextRecord-&gt;Eip+=4;将发生异常的代码地址加4使得其能够继续运行；进程调试运行时产生无效的内存访问异常，从而无法继续调试。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">LPVOID g_pOrgFilter = 0;</span><br><span class="line"></span><br><span class="line">LONG WINAPI ExceptionFilter(PEXCEPTION_POINTERS pExcept)</span><br><span class="line">&#123;</span><br><span class="line">	SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER)g_pOrgFilter);</span><br><span class="line"></span><br><span class="line">	// 8900    MOV DWORD PTR DS:[EAX], EAX  </span><br><span class="line">	// FFE0    JMP EAX  </span><br><span class="line">	pExcept-&gt;ContextRecord-&gt;Eip += 4;</span><br><span class="line"></span><br><span class="line">	return EXCEPTION_CONTINUE_EXECUTION;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void AD_SetUnhandledExceptionFilter()</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;SEH : SetUnhandledExceptionFilter()\n&quot;);</span><br><span class="line"></span><br><span class="line">	g_pOrgFilter = (LPVOID)SetUnhandledExceptionFilter(</span><br><span class="line">		(LPTOP_LEVEL_EXCEPTION_FILTER)ExceptionFilter);</span><br><span class="line"></span><br><span class="line">	__asm &#123;</span><br><span class="line">		xor eax, eax;</span><br><span class="line">		mov dword ptr[eax], eax</span><br><span class="line">			jmp eax</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	printf(&quot;  =&gt; Not debugging...\n\n&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-3-VEH"><a href="#4-3-VEH" class="headerlink" title="4.3 VEH"></a>4.3 VEH</h4><p>Veh是在WindowsXP中引入的，是SEH的变体。Veh和SEH不是相互依赖的，他们两个是可以同时工作的。添加新的VEH处理程序时，SEH链不会受到影响，因为VEH处理程序列表存储在ntdll!LdrpVectorHandlerList未导出变量中。VEH和SEH机制非常相似，唯一的区别是公开的函数用于设置和删除VEH处理程序。添加和删除VEH处理程序以及VEH处理函数的原函数签名如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">PVOID WINAPI AddVectoredExceptionHandler(</span><br><span class="line">    ULONG                       FirstHandler,</span><br><span class="line">    PVECTORED_EXCEPTION_HANDLER VectoredHandler</span><br><span class="line">);</span><br><span class="line">ULONG WINAPI RemoveVectoredExceptionHandler(</span><br><span class="line">    PVOID Handler</span><br><span class="line">);</span><br><span class="line">LONG CALLBACK VectoredHandler(</span><br><span class="line">    PEXCEPTION_POINTERS ExceptionInfo</span><br><span class="line">);</span><br><span class="line">The _EXCEPTION_POINTERS structure looks like this:  </span><br><span class="line">typedef struct _EXCEPTION_POINTERS &#123;</span><br><span class="line">  PEXCEPTION_RECORD ExceptionRecord;</span><br><span class="line">  PCONTEXT          ContextRecord;</span><br><span class="line">&#125; EXCEPTION_POINTERS, *PEXCEPTION_POINTERS;</span><br></pre></td></tr></table></figure>
+
+<p>在处理程序中接收控制权之后，系统收集当前进程上下文并通过ContextRecord参数传递。下面是使用向量异常处理的反调试保护代码示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">LONG CALLBACK ExceptionHandler(PEXCEPTION_POINTERS ExceptionInfo)</span><br><span class="line">&#123;</span><br><span class="line">	PCONTEXT ctx = ExceptionInfo-&gt;ContextRecord;</span><br><span class="line">	//检测硬件断点</span><br><span class="line">	if (ctx-&gt;Dr0 != 0 || ctx-&gt;Dr1 != 0 || ctx-&gt;Dr2 != 0 || ctx-&gt;Dr3 != 0)</span><br><span class="line">	&#123;</span><br><span class="line">		std::cout &lt;&lt; &quot;Stop debugging program!&quot; &lt;&lt; std::endl;</span><br><span class="line">		exit(-1);</span><br><span class="line">	&#125;</span><br><span class="line">	//返回源程序</span><br><span class="line">	ctx-&gt;Eip += 2;</span><br><span class="line">	return EXCEPTION_CONTINUE_EXECUTION;</span><br><span class="line">&#125;</span><br><span class="line">BOOL CheckDebug29()</span><br><span class="line">&#123;</span><br><span class="line">	AddVectoredExceptionHandler(0, ExceptionHandler);</span><br><span class="line">	__asm int 3h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="四、调试信息-本质还是异常"><a href="#四、调试信息-本质还是异常" class="headerlink" title="四、调试信息(本质还是异常)"></a>四、调试信息(本质还是异常)</h2><p>自Windows10以来，OutputDebugString函数的实现已更改为带有特定参数的简单RaiseException调用。因此，调试输出异常现在必须由调试器处理。<br>有两种异常类型：DBG_PRINTEXCEPTION_C(0x40010006)和DBG_PRINTEXCEPTION_W(0x4001000A)，可用于检测调试器是否存在</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">BOOL CheckDebug29()</span><br><span class="line">&#123;</span><br><span class="line">	ULONG_PTR args[4] = &#123; 0 &#125;; </span><br><span class="line">	CHAR * outputString = (CHAR *)&quot;Any text&quot;;</span><br><span class="line">	args[0] = (ULONG_PTR)strlen(outputString) + 1;</span><br><span class="line">	args[1] = (ULONG_PTR)outputString;</span><br><span class="line">	__try</span><br><span class="line">	&#123;</span><br><span class="line">		RaiseException(DBG_PRINTEXCEPTION_WIDE_C, 0, 4, args);</span><br><span class="line">		return TRUE;//printf(&quot;Debugger detected&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	__except (EXCEPTION_EXECUTE_HANDLER)</span><br><span class="line">	&#123;</span><br><span class="line">		return FALSE;//printf(&quot;Debugger NOT detected&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>参考链接:<br><span class="exturl" data-url="aHR0cHM6Ly9iYnMucGVkaXkuY29tL3RocmVhZC0yMjU3NDAuaHRt" title="https://bbs.pediy.com/thread-225740.htm">反调试技术总结 <i class="fa fa-external-link"></i></span><br><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vZGxpdjMvcC82NTA0MzExLmh0bWw=" title="https://www.cnblogs.com/dliv3/p/6504311.html">静态反调试技术<i class="fa fa-external-link"></i></span><br><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2x3Z2x1Y2t5L2FydGljbGUvZGV0YWlscy81NDEwMjE0" title="https://blog.csdn.net/lwglucky/article/details/5410214">Windows 反调试参考翻译<i class="fa fa-external-link"></i></span></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/AntiDebug/" rel="tag"><i class="fa fa-tag"></i> AntiDebug</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/09/30/IP地址和子网划分学习笔记之《子网划分详解》/" rel="next" title="IP地址和子网划分学习笔记之《子网划分详解》">
+                  <i class="fa fa-chevron-left"></i> IP地址和子网划分学习笔记之《子网划分详解》
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/10/09/IP地址和子网划分学习笔记之《预备知识：进制计数》/" rel="prev" title="IP地址和子网划分学习笔记之《预备知识：进制计数》">
+                  IP地址和子网划分学习笔记之《预备知识：进制计数》 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、探测Windows调试器"><span class="nav-number">1.</span> <span class="nav-text">一、探测Windows调试器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Windows-API"><span class="nav-number">1.1.</span> <span class="nav-text">1 Windows API</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-IsDebuggerPresent"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 IsDebuggerPresent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-NtQueryInformationProcess"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.3 NtQueryInformationProcess</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-GetLastError"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.4 GetLastError</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-ZwSetInformationThread-、NtCreateThreadEx"><span class="nav-number">1.1.4.</span> <span class="nav-text">1.5 ZwSetInformationThread 、NtCreateThreadEx</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-手动检测数据结构"><span class="nav-number">1.2.</span> <span class="nav-text">2.手动检测数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-检测BeingDebugged属性"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 检测BeingDebugged属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2检测ProcessHeap属性"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2检测ProcessHeap属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3检测NTGlobalFlag"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3检测NTGlobalFlag</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-扫描堆特征-只适用于XP"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.4 扫描堆特征(只适用于XP)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-系统痕迹检测"><span class="nav-number">1.3.</span> <span class="nav-text">3.系统痕迹检测</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1查找调试器引用的注册表项"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1查找调试器引用的注册表项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2查找窗体信息"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2查找窗体信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3查找进程信息"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3查找进程信息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、识别调试器行为"><span class="nav-number">2.</span> <span class="nav-text">二、识别调试器行为</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-软件断点检查"><span class="nav-number">2.1.</span> <span class="nav-text">1.软件断点检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-硬件断点检查"><span class="nav-number">2.2.</span> <span class="nav-text">2.硬件断点检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-执行代码校验和检查"><span class="nav-number">2.3.</span> <span class="nav-text">3.执行代码校验和检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-时钟检测"><span class="nav-number">2.4.</span> <span class="nav-text">4.时钟检测</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1使用rdtsc指令"><span class="nav-number">2.4.1.</span> <span class="nav-text">4.1使用rdtsc指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2使用QueryPerformanceCounter和GetTickCount"><span class="nav-number">2.4.2.</span> <span class="nav-text">4.2使用QueryPerformanceCounter和GetTickCount</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-判断父进程是否是explorer-exe"><span class="nav-number">2.5.</span> <span class="nav-text">5.判断父进程是否是explorer.exe</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-判断STARTUPINFO信息"><span class="nav-number">2.6.</span> <span class="nav-text">6.判断STARTUPINFO信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-判断是否具有SeDebugPrivilege权限"><span class="nav-number">2.7.</span> <span class="nav-text">7.判断是否具有SeDebugPrivilege权限</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、干扰调试器的功能"><span class="nav-number">3.</span> <span class="nav-text">三、干扰调试器的功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-使用TLS回调"><span class="nav-number">3.1.</span> <span class="nav-text">1.使用TLS回调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-利用中断"><span class="nav-number">3.2.</span> <span class="nav-text">2.利用中断</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#int-3"><span class="nav-number">3.2.1.</span> <span class="nav-text">int 3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SEH（INT-3，这里简单说，后边涉及VEH，在拿出来单独看一下）"><span class="nav-number">3.2.2.</span> <span class="nav-text">SEH（INT 3，这里简单说，后边涉及VEH，在拿出来单独看一下）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0xCD03"><span class="nav-number">3.2.3.</span> <span class="nav-text">0xCD03</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#int-2D"><span class="nav-number">3.2.4.</span> <span class="nav-text">int 2D</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0xF1"><span class="nav-number">3.2.5.</span> <span class="nav-text">0xF1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#堆栈段操作"><span class="nav-number">3.2.6.</span> <span class="nav-text">堆栈段操作</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-设置陷阱标志位（TF）"><span class="nav-number">3.3.</span> <span class="nav-text">3.设置陷阱标志位（TF）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用异常"><span class="nav-number">3.4.</span> <span class="nav-text">使用异常</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1RaiseException"><span class="nav-number">3.4.1.</span> <span class="nav-text">4.1RaiseException</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2SetUnhandledExceptionFilter"><span class="nav-number">3.4.2.</span> <span class="nav-text">4.2SetUnhandledExceptionFilter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-VEH"><span class="nav-number">3.4.3.</span> <span class="nav-text">4.3 VEH</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、调试信息-本质还是异常"><span class="nav-number">4.</span> <span class="nav-text">四、调试信息(本质还是异常)</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/header.jpg"
+      alt="Assassin">
+  <p class="site-author-name" itemprop="name">Assassin</p>
+  <div class="site-description" itemprop="description">For Fun</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Assassin</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">站点总字数: 97k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">站点阅读时长: 1:28</span>
+</div>
+
+<div id="days"></div>
+<script>
+function show_date_time(){
+    window.setTimeout("show_date_time()", 1000);
+    BirthDay=new Date("09/14/2019 15:13:14");//修改为自己的blog建站时间
+    today=new Date();
+    timeold=(today.getTime()-BirthDay.getTime());
+    sectimeold=timeold/1000
+    secondsold=Math.floor(sectimeold);
+    msPerDay=24*60*60*1000
+    e_daysold=timeold/msPerDay
+    daysold=Math.floor(e_daysold);
+    e_hrsold=(e_daysold-daysold)*24;
+    hrsold=setzero(Math.floor(e_hrsold));
+    e_minsold=(e_hrsold-hrsold)*60;
+    minsold=setzero(Math.floor((e_hrsold-hrsold)*60));
+    seconds=setzero(Math.floor((e_minsold-minsold)*60));
+    document.getElementById('days').innerHTML="本站已安全运行"+daysold+"天"+hrsold+"小时"+minsold+"分"+seconds+"秒";
+}
+function setzero(i){
+    if (i<10)
+    {i="0" + i};
+    return i;
+}
+show_date_time();
+</script>
+
+<!--
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0Lm9yZw==">NexT.Mist</span> v7.4.0</div>
+-->
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/muse.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css">
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.js"></script><script src="/js/algolia-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>!function(e){var r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function t(){for(var c=0;c<r.length;c++)t=r[c],void 0,0<=(n=t.getBoundingClientRect()).top&&0<=n.left&&n.top<=(e.innerHeight||document.documentElement.clientHeight)&&function(){var t,n,e,i,o=r[c];t=o,n=function(){r=r.filter(function(t){return o!==t})},e=new Image,i=t.getAttribute("data-original"),e.onload=function(){t.src=i,n&&n()},e.src=i}();var t,n}t(),e.addEventListener("scroll",function(){!function(t,n){clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(n)},500)}(t,e)})}(this);</script></body>
+
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/love.js"></script>

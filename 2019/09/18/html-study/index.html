@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.proxy.ustclug.org/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+
+<style>
+    .pace .pace-progress {
+        background: #428BCA; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #428BCA, 0 0 5px #ff009e; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #428BCA;    /*上边框颜色*/
+        border-left-color: #428BCA;    /*左边框颜色*/
+    }
+</style>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.4.0',
+    exturl: true,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="html快速学习语句">
+<meta name="keywords" content="basic-web">
+<meta property="og:type" content="article">
+<meta property="og:title" content="html study">
+<meta property="og:url" content="http://yoursite.com/2019/09/18/html-study/index.html">
+<meta property="og:site_name" content="Assassin">
+<meta property="og:description" content="html快速学习语句">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-09-18T15:15:14.276Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="html study">
+<meta name="twitter:description" content="html快速学习语句">
+  <link rel="canonical" href="http://yoursite.com/2019/09/18-study/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>html study | Assassin</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Assassin</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">For Fun</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-视频">
+      
+    
+
+    <a href="/videos/" rel="section"><i class="menu-item-icon fa fa-fw fa-video-camera"></i> <br>视频</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input" id="search-input"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+  
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/18/html-study/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Assassin">
+      <meta itemprop="description" content="For Fun">
+      <meta itemprop="image" content="/images/header.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Assassin">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">html study
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-18 23:11:29 / 修改时间：23:15:14" itemprop="dateCreated datePublished" datetime="2019-09-18T23:11:29+08:00">2019-09-18</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/web/" itemprop="url" rel="index"><span itemprop="name">web</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span>8.8k</span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span>8 分钟</span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>html快速学习语句</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br></pre></td><td class="code"><pre><span class="line">一、文字</span><br><span class="line">　　1.标题文字 &lt;h#&gt;..........&lt;/h#&gt; #=1~6；h1为最大字，h6为最小字</span><br><span class="line">　　2.字体变化 &lt;font&gt;..........&lt;/font&gt;</span><br><span class="line">　　【1】字体大小 &lt;font size=#&gt;..........&lt;/font&gt; #=1~7；数字愈大字也愈大</span><br><span class="line">　　【2】指定字型 &lt;font face=&quot;字体名称&quot;&gt;..........&lt;/font&gt;</span><br><span class="line">　　【3】文字颜色 &lt;font color=#rrggbb&gt;..........&lt;/font&gt;</span><br><span class="line">　　rr：表红色（red）色码</span><br><span class="line">　　gg：表绿色（green）色码</span><br><span class="line">　　bb：表蓝色（blue）色码</span><br><span class="line">　　rrggbb也可用6位颜色代码数字</span><br><span class="line">　　3.显示小字体 &lt;small&gt;..........&lt;/small&gt;</span><br><span class="line">　　4.显示大字体 &lt;big&gt;..........&lt;/big&gt;</span><br><span class="line">　　5.粗体字 &lt;b&gt;..........&lt;/b&gt;</span><br><span class="line">　　6.斜体字 &lt;i&gt;..........&lt;/i&gt;</span><br><span class="line">　　7.打字机字体 &lt;tt&gt;..........&lt;/tt&gt;</span><br><span class="line">　　8.底线 &lt;u&gt;..........&lt;/u&gt;</span><br><span class="line">　　9.删除线 &lt;strike&gt;..........&lt;/strike&gt;</span><br><span class="line">　　10.下标字 &lt;sub&gt;..........&lt;/sub&gt;</span><br><span class="line">　　11.上标字 &lt;sup&gt;..........&lt;/sup&gt;</span><br><span class="line">　　12.文字闪烁效果 &lt;blink&gt;..........&lt;/blink&gt;</span><br><span class="line">　　13.换行（也称回车） &lt;br&gt;</span><br><span class="line">　　14.分段 &lt;p&gt;</span><br><span class="line">　　15.文字的对齐方向 &lt;p align=&quot;#&quot;&gt; #号可为 left：表向左对齐（预设值） center：表向中对齐 right：表向右对齐 P.S.&lt;p align=&quot;#&quot;&gt;之后的文字都会以所设的对齐方式显示，直到出现另一个&lt;p align=&quot;#&quot;&gt;改变其对齐方向，遇到&lt;hr&gt;或&lt;h#&gt;标签时会自动设回预设的向左对齐。</span><br><span class="line">　　16.分隔线 &lt;hr&gt;</span><br><span class="line">　　【1】分隔线的粗细 &lt;hr size=点数&gt;</span><br><span class="line">　　【2】分隔线的宽度 &lt;hr size=点数或百分比&gt;</span><br><span class="line">　　【3】分隔线对齐方向 &lt;hr align=&quot;#&quot;&gt;</span><br><span class="line">　　#号可为 left：表向左对齐（预设值） center：表向中对齐 right：表向右对齐</span><br><span class="line">　　【4】分隔线的颜色 &lt;hr color=#rrggbb&gt;</span><br><span class="line">　　【5】实心分隔线 &lt;hr noshade&gt;</span><br><span class="line">　　17.居中对齐 &lt;center&gt;..........&lt;/center&gt;</span><br><span class="line">　　18.依原始样式显示 &lt;pre&gt;..........&lt;/pre&gt;</span><br><span class="line">　　19.&lt;body&gt;指令的属性</span><br><span class="line">　　【1】背景颜色 -- bgcolor &lt;body bgcolor=#rrggbb&gt;</span><br><span class="line">　　【2】背景图案 -- background &lt;body  background=&quot;图形文件名&quot;&gt;</span><br><span class="line">　　【3】设定背景图案不会卷动 -- bgproperties &lt;body bgproperties=fixed&gt;</span><br><span class="line">　　【4】文件内容文字的颜色 -- text &lt;body text=#rrggbb&gt;</span><br><span class="line">　　【5】超连结文字颜色 -- link &lt;body link=#rrggbb&gt;</span><br><span class="line">　　【6】正被选取的超连结文字颜色 -- vlink &lt;body vlink=#rrggbb&gt;</span><br><span class="line">　　【7】已连结过的超连结文字颜色 -- alink &lt;body alink=#rrggbb&gt;</span><br><span class="line">　　20.文字移动指令&lt;MARQUEE&gt;..........&lt;/MARQUEE&gt;</span><br><span class="line">　　移动速度指令是:scrollAmount=#    #最小为1，速度为最慢；数字越大移动的越快。</span><br><span class="line">　　移动方向指令是：direction=#          up向上、down向下、left向左、right向右。</span><br><span class="line">　　指令举例：&lt;MARQUEE scrollAmount=3 direction=up&gt;..........&lt;/MARQUEE&gt;</span><br><span class="line">　　</span><br><span class="line">　　二、图片</span><br><span class="line">　　1.插入图片 &lt;img src=&quot;图形文件名&quot;&gt;</span><br><span class="line">　　2.设定图框 -- border &lt;img src=&quot;图形文件名&quot; border=点数&gt;</span><br><span class="line">　　3.设定图形大小 -- width、height &lt;img src=&quot;图形文件名&quot; width=宽度点数 height=高度点数&gt;</span><br><span class="line">　　4.设定图形上下左右留空 -- vspace、hspace &lt;img src=&quot;图形文件名&quot; vspace=上下留空点数 hspace=左右留空点数&gt;</span><br><span class="line">　　5.图形附注 &lt;img src=&quot;图形文件名&quot; alt=&quot;说明文字&quot;&gt;</span><br><span class="line">　　6.预载图片</span><br><span class="line">　　&lt;img src=&quot;高解析度图形文件名&quot; lowsrc=&quot;低解析度图形文件名&quot;&gt; P.S.两个图的图形大小最好一致;</span><br><span class="line">　　7.影像地图（Image Map） &lt;img src=&quot;图形文件名&quot; usemap=&quot;#图的名称&quot;&gt; &lt;map name=&quot;图的名称&quot;&gt;</span><br><span class="line">　　&lt;area shape=形状 coords=区域座标列表 href=&quot;连结点之URL&quot;&gt;</span><br><span class="line">　　&lt;area shape=形状 coords=区域座标列表 href=&quot;连结点之URL&quot;&gt;</span><br><span class="line">　　&lt;area shape=形状 coords=区域座标列表 href=&quot;连结点之URL&quot;&gt;</span><br><span class="line">　　&lt;area shape=形状 coords=区域座标列表 href=&quot;连结点之URL&quot;&gt; &lt;/map&gt;</span><br><span class="line">　　【1】定义形状 -- shape</span><br><span class="line">　　shape=rect：矩形 shape=circle：圆形 shape=poly：多边形</span><br><span class="line">　　【2】定义区域 -- coords</span><br><span class="line">　　a.矩形：必须使用四个数字，前两个数字为左上角座标，后两个数字为右下角座标</span><br><span class="line">　　例：&lt;area shape=rect coords=100,50,200,75 href=&quot;URL&quot;&gt;</span><br><span class="line">　　b.圆形：必须使用三个数字，前两个数字为圆心的座标，最后一个数字为半径长度</span><br><span class="line">　　例：&lt;area shape=circle coords=85,155,30 href=&quot;URL&quot;&gt;</span><br><span class="line">　　c.任意图形（多边形）：将图形之每一转折点座标依序填入</span><br><span class="line">　　例：&lt;area shape=poly coords=232,70,285,70,300,90,250,90,200,78 href=&quot;URL&quot;</span><br><span class="line">　　三、表格相关</span><br><span class="line">　　1.表格标题</span><br><span class="line">　　&lt;caption&gt;..........&lt;/caption&gt;</span><br><span class="line">　　表格标题位置 -- align</span><br><span class="line">　　&lt;caption align=&quot;#&quot;&gt; #号可为 top：表标题置于表格上方（预设值）</span><br><span class="line">　　bottom：表标题置于表格下方</span><br><span class="line">　　2.定义列 &lt;tr&gt;</span><br><span class="line">　　3.定义栏位 《1》&lt;td&gt;：靠左对齐</span><br><span class="line">　　《2》&lt;th&gt;：靠中对齐ⅱ粗体</span><br><span class="line">　　【1】水平位置 -- align &lt;th align=&quot;#&quot;&gt;</span><br><span class="line">　　#号可为 left：向左对齐  center：向中对齐 right：向右对齐</span><br><span class="line">　　【2】垂直位置 -- align &lt;th align=&quot;#&quot;&gt; #号可为</span><br><span class="line">　　top：向上对齐 middle：向中对齐    bottom：向下对齐</span><br><span class="line">　　【3】栏位宽度 -- width     &lt;th width=点数或百分比&gt;</span><br><span class="line">　　【4】栏位垂直合并 -- rowspan    &lt;th rowspan=欲合并栏位数&gt;</span><br><span class="line">　　【5】栏位横向合并 -- colspan      &lt;th colspan=欲合并栏位数&gt;</span><br><span class="line">　　四、表格的主要属性</span><br><span class="line">　　1. &lt;table&gt;标记的主要属性</span><br><span class="line">　　align定义表格的对齐方式，有三个属性值center，left，right</span><br><span class="line">　　background定义表格的背景图案，属性值为图片的地址</span><br><span class="line">　　bgcolor定义表格的背景颜色，属性值是各种颜色代码</span><br><span class="line">　　border定义表格的边框宽度，属性值是数字</span><br><span class="line">　　bordercolor定义表格边框的颜色，属性值是各种颜色代码</span><br><span class="line">　　cellpadding定义单元格内容与单元格边框之间的距离，属性值是数字</span><br><span class="line">　　cellspacing定义表格中单元格之间的距离</span><br><span class="line">　　height定义表格的高度，属性值是数字</span><br><span class="line">　　width定义表格的宽度，属性值是数字</span><br><span class="line">　　2. &lt;tr&gt;标记，表格是由多行与多列组成的，&lt;tr&gt;标记用来定义表格的一行，他的属性极其属性值定义的是表格中的该行，其主要属性与属性值如下：</span><br><span class="line">　　align定义对齐方式，属性值与上同</span><br><span class="line">　　background定义背景图案 bgcolor定义背景色</span><br><span class="line">　　3. &lt;td&gt;标记。用&lt;td&gt;标记概况起来的内容表示表格的单元。其主要属性与属性值和&lt;table&gt;标记的一样，补充两个合并列和行的代码：</span><br><span class="line">　　colspan定义合并表格的列数，属性值是数字</span><br><span class="line">　　rowspan定义合并表格的行数，属性值是数字</span><br><span class="line">　　五、FRAME</span><br><span class="line">　　1、分割视窗指令 &lt;frameset&gt;..........&lt;/frameset&gt;</span><br><span class="line">　　【1】垂直（上下）分割 -- rows</span><br><span class="line">　　&lt;frameset rows=#&gt; #号可为点数：</span><br><span class="line">　　如欲分割为100,200,300三个视窗，则&lt;frameset rows=100,200,300&gt;；</span><br><span class="line">　　亦可以*号代表，如&lt;frameset rows=*,500,*&gt;</span><br><span class="line">　　百分比：如&lt;frameset rows=30%,70%&gt;，各项总和最好为100%;</span><br><span class="line">　　【2】水平（左右）分割 -- cols &lt;frameset cols=点数或百分比&gt;</span><br><span class="line">　　2、指定视窗内容 -- &lt;frame&gt;</span><br><span class="line">　　&lt;frameset cols=30%,70%&gt; &lt;frame&gt; &lt;frame&gt; &lt;/frameset&gt;</span><br><span class="line">　　【1】指定视窗的文件名称 -- src &lt;frame src=HTML档名&gt;</span><br><span class="line">　　【2】定义视窗的名称 -- name</span><br><span class="line">　　&lt;frame name=视窗名称&gt;</span><br><span class="line">　　【3】设定文件与上下边框的距离 -- marginheight</span><br><span class="line">　　&lt;frame marginheight=点数&gt;</span><br><span class="line">　　【4】设定文件与左右边框的距离 -- marginwidth</span><br><span class="line">　　&lt;frame marginwidth=点数&gt;</span><br><span class="line">　　【5】设定分割视窗卷轴 -- scrolling</span><br><span class="line">　　&lt;frame scrolling=#&gt; #号可为 yes：固定出现卷轴</span><br><span class="line">　　no：不出现卷轴</span><br><span class="line">　　auto：自动判断文件大小需不需要卷轴（预设值）</span><br><span class="line">　　【6】锁住分割视窗的大小 -- noresize &lt;frame noresize&gt;</span><br><span class="line">　　六、歌曲代码:</span><br><span class="line">　　在这组代码中，不必管它是mms.http.rtsp，只要看尾缀是asf、wma、wmv、wmv、rm都可适用下面的代码:</span><br><span class="line">　　1. 手动播放:</span><br><span class="line">　　&lt;EMBED src=歌曲地址 volume=&quot;100&quot; width=39 height=18 hidden=&quot;FALSE&quot; autostart=&quot;fault&quot; type=&quot;audio/x-pn-realaudio-plugin&quot; controls=&quot;PlayButton&quot;&gt;</span><br><span class="line">　　2. 打开页面自动播放:</span><br><span class="line">　　&lt;EMBED src=&quot;歌曲地址&quot; width=&quot;39&quot; height=&quot;18&quot; autostart=&quot;true&quot; hidden=&quot;false&quot; loop=&quot;infinite&quot; align=&quot;middle&quot; volume=&quot;100&quot; type=&quot;audio/x-pn-realaudio-plugin&quot; controls=&quot;PlayButton&quot; autostart=&quot;true&quot;&gt;</span><br><span class="line">　　------------------------------------------------------------------</span><br><span class="line">　　套用代码:</span><br><span class="line">　　&lt;div align=&quot;center&quot;&gt;</span><br><span class="line">　　&lt;table border=&quot;1&quot; width=&quot;90%&quot; height=&quot;403&quot; background=&quot;背景图片地址&quot;&gt;</span><br><span class="line">　　&lt;tr&gt;&lt;td width=&quot;80%&quot; height=&quot;100%&quot;&gt;</span><br><span class="line">　　&lt;p align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;</span><br><span class="line">　　&lt;font face=&quot;华文彩云&quot; size=&quot;6&quot; color=&quot;#FFFFFF&quot;&gt;歌曲或音乐名称&lt;/font&gt;&lt;br&gt;&lt;br&gt;</span><br><span class="line">　　&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;图片地址&quot;&gt;&lt;br&gt;&lt;br&gt;</span><br><span class="line">　　&lt;font color=&quot;#FFFFFF&quot; size=3&gt;介绍文字&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;</span><br><span class="line">　　&lt;EMBED style=&quot;FILTER: xray()&quot; src=音乐地址 width=250 height=30 type=audio/x-ms-wma autostart=&quot;true&quot; loop=&quot;-1&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;</span><br><span class="line">　　&lt;/td&gt;&lt;/tr&gt;</span><br><span class="line">　　&lt;/table&gt;</span><br><span class="line">　　&lt;/div&gt;</span><br><span class="line">　　简易套用代码详解:</span><br><span class="line">　　&lt;div align=&quot;center&quot;&gt;是定义帖子居中;</span><br><span class="line">　　&lt;table border=&quot;1&quot; width=&quot;90%&quot; height=&quot;403&quot; background=&quot;背景图片地址&quot;&gt;&lt;tr&gt;&lt;td width=&quot;80%&quot; height=&quot;100%&quot;&gt;</span><br><span class="line">　　这其中的border=&quot;1&quot;是定义表格边线的宽度,定义为0则无边线;width=&quot;90%&quot; height=&quot;403&quot;分别定义背景图表格的宽度和高度.如果背景图是一张大图,可以这样定义:width=图片宽度 height=图片高度</span><br><span class="line">　　&lt;p align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;font face=&quot;华文彩云&quot; size=&quot;6&quot; color=&quot;#FFFFFF&quot;&gt;歌曲或音乐名称&lt;/font&gt;&lt;br&gt;&lt;br&gt;</span><br><span class="line">　　&lt;p align=&quot;center&quot;&gt;是定义文字居中的，&lt;br&gt;是回行代码，加几个就会空几行。&lt;font face=&quot;华文彩云&quot; size=&quot;6&quot; color=&quot;#FFFFFF&quot;&gt;是定义文字属性的。face=&quot;华文彩云&quot;是定义字体，你可以把字体换成隶书、宋体等。size=&quot;6&quot;是定义字号的，数字越大字越大，如果不定义，默认是2号字。color=&quot;#FFFFFF&quot;是定义字体颜色的。全部字体颜色的代码在妙手饰图区有人发过，你可以找来改。</span><br><span class="line">　　&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;图片地址&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;font color=&quot;#FFFFFF&quot;&gt;介绍文字&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;</span><br><span class="line">　　第一个括号里的代码仍然是定义图片和文字居中的。&lt;img src=&quot;图片地址&quot;&gt;是插入图片代码。&lt;font color=&quot;#FFFFFF&quot; size=3&gt;介绍文字&lt;/font&gt;是定义这段文字的。如果想改变字拧⒆痔濉⒆值难丈??烧瞻嵘厦嫖医驳亩ㄒ宸椒ā?/font&gt;</span><br><span class="line">　　&lt;EMBED style=&quot;FILTER: xray()&quot; src=音乐地址 width=250 height=30 type=audio/x-ms-wma autostart=&quot;true&quot; loop=&quot;-1&quot;&gt;</span><br><span class="line">　　这一段是插入播放器代码，因为我插的是特殊的播放器，style=&quot;FILTER: xray()&quot; 是特殊代码。“src=音乐地址”是插入音乐文件的地址。width=250 height=30分别定义播放器的宽度和高度(如果把宽和高都设成零则为隐藏,并且只能自动播放)。autostart=&quot;true&quot; loop=&quot;-1&quot;是定义音乐播放方式的，autostart=&quot;true&quot;是设定手动或自动播放，“true”或“1”是自动播放，“false”或“0”是手动播放；loop=&quot;-1&quot;是播放次数，“true”或“1”表示重复播放，“false”“-1”或“0”是只播放一次。</span><br><span class="line">　　&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;回行代码和与前面对应的固定代码。</span><br></pre></td></tr></table></figure>
+
+<p>参考:<br><span class="exturl" data-url="aHR0cHM6Ly93d3cuYnVnYmFuay5jbi9xL2RldGFpbC81OTcyZWNkNWJkNTY2OGQ3NGI5Njg2OTMuaHRtbA==" title="https://www.bugbank.cn/q/detail/5972ecd5bd5668d74b968693.html">SKILLS小管家<i class="fa fa-external-link"></i></span></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/basic-web/" rel="tag"><i class="fa fa-tag"></i> basic-web</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/09/12/利用hexo和github搭建博客/" rel="next" title="利用hexo和github搭建博客">
+                  <i class="fa fa-chevron-left"></i> 利用hexo和github搭建博客
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/09/24/网络层次划分/" rel="prev" title="网络层次划分">
+                  网络层次划分 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/header.jpg"
+      alt="Assassin">
+  <p class="site-author-name" itemprop="name">Assassin</p>
+  <div class="site-description" itemprop="description">For Fun</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Assassin</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">站点总字数: 97k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">站点阅读时长: 1:28</span>
+</div>
+
+<div id="days"></div>
+<script>
+function show_date_time(){
+    window.setTimeout("show_date_time()", 1000);
+    BirthDay=new Date("09/14/2019 15:13:14");//修改为自己的blog建站时间
+    today=new Date();
+    timeold=(today.getTime()-BirthDay.getTime());
+    sectimeold=timeold/1000
+    secondsold=Math.floor(sectimeold);
+    msPerDay=24*60*60*1000
+    e_daysold=timeold/msPerDay
+    daysold=Math.floor(e_daysold);
+    e_hrsold=(e_daysold-daysold)*24;
+    hrsold=setzero(Math.floor(e_hrsold));
+    e_minsold=(e_hrsold-hrsold)*60;
+    minsold=setzero(Math.floor((e_hrsold-hrsold)*60));
+    seconds=setzero(Math.floor((e_minsold-minsold)*60));
+    document.getElementById('days').innerHTML="本站已安全运行"+daysold+"天"+hrsold+"小时"+minsold+"分"+seconds+"秒";
+}
+function setzero(i){
+    if (i<10)
+    {i="0" + i};
+    return i;
+}
+show_date_time();
+</script>
+
+<!--
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0Lm9yZw==">NexT.Mist</span> v7.4.0</div>
+-->
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/muse.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css">
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.js"></script><script src="/js/algolia-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>!function(e){var r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function t(){for(var c=0;c<r.length;c++)t=r[c],void 0,0<=(n=t.getBoundingClientRect()).top&&0<=n.left&&n.top<=(e.innerHeight||document.documentElement.clientHeight)&&function(){var t,n,e,i,o=r[c];t=o,n=function(){r=r.filter(function(t){return o!==t})},e=new Image,i=t.getAttribute("data-original"),e.onload=function(){t.src=i,n&&n()},e.src=i}();var t,n}t(),e.addEventListener("scroll",function(){!function(t,n){clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(n)},500)}(t,e)})}(this);</script></body>
+
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/love.js"></script>
