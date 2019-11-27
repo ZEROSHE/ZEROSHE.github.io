@@ -19,7 +19,8 @@
         <category>Windows</category>
       </categories>
       <tags>
-        <tag>VirtualBox cuckoo</tag>
+        <tag>VirtualBox</tag>
+        <tag>cuckoo</tag>
       </tags>
   </entry>
   <entry>
@@ -85,7 +86,8 @@
         <category>Web</category>
       </categories>
       <tags>
-        <tag>web-basic,protocol</tag>
+        <tag>web-basic</tag>
+        <tag>arp</tag>
       </tags>
   </entry>
   <entry>
